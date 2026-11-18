@@ -76,19 +76,28 @@
   .nav nav a:hover { color: var(--text); }
 
   /* Hero: the pitch on the left, the live demo on the right */
-  .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr); gap: clamp(28px, 4.5vw, 60px); align-items: center; padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 7vw, 88px); }
+  .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr); grid-template-rows: auto auto auto; column-gap: clamp(28px, 4.5vw, 60px); row-gap: 0; align-items: stretch; padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 7vw, 88px); }
+  .pitch { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: space-between; }
+  .demo { display: contents; }
+  .hint { grid-column: 2; grid-row: 1; }
+  .mac { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; }
+  .mac .panel { flex: 1; }
+  .result { grid-column: 2; grid-row: 3; }
   .hero::before {
     content: ""; position: absolute; inset: -120px 0 auto 30%; height: 760px; z-index: -1; pointer-events: none;
     background: radial-gradient(closest-side, rgba(255, 122, 47, 0.17), transparent);
     transition: opacity 0.8s;
   }
   .calm .hero::before { opacity: 0.3; }
-  .face { display: block; width: clamp(88px, 9vw, 116px); height: auto; margin-left: -10px; filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55)); }
-  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.3rem); font-weight: 700; margin-top: 14px; }
+  .face { display: block; width: clamp(88px, 9vw, 116px); height: auto; margin: calc(clamp(88px, 9vw, 116px) * -0.098) 0 0 -10px; filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55)); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.3rem); font-weight: 700; margin-top: 10px; }
   .hero h1 em { font-style: normal; color: var(--accent); }
-  .hero .sub { color: var(--muted); font-size: clamp(1.05rem, 1.7vw, 1.22rem); max-width: 27em; margin-top: 18px; }
-  .hero .cmd { margin-top: 30px; }
-  .meta { color: var(--faint); font-size: 14px; margin-top: 14px; }
+  .hero .sub { color: var(--muted); font-size: clamp(1.05rem, 1.7vw, 1.22rem); max-width: 530px; margin-top: 18px; }
+  /* The command box is the left column's bottom edge; its label sits above it, and both share the paragraph's width. */
+  .get { max-width: 530px; margin-top: 28px; }
+  .hero .cmd { margin-top: 10px; max-width: none; }
+  .hero .cmd code { font-size: 13px; }
+  .meta { color: var(--faint); font-size: 14px; line-height: 1.3; }
   .meta a { color: var(--muted); }
   .hint { color: var(--muted); font-size: 15px; text-align: center; margin-bottom: 14px; }
   .hint b { font-family: var(--round); color: var(--accent); }
@@ -103,14 +112,14 @@
   /* Command block */
   .cmd {
     display: flex; align-items: center; gap: 10px; max-width: 610px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 7px 7px 7px 16px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 7px 7px 7px 16px;
   }
   .cmd code { flex: 1; min-width: 0; font: 13.5px/1.5 var(--mono); color: var(--cream); white-space: pre; overflow-x: auto; scrollbar-width: none; text-align: left; padding: 6px 0; }
   .cmd code::-webkit-scrollbar { display: none; }
   .cmd code::before { content: "$ "; color: var(--accent); user-select: none; -webkit-user-select: none; }
   .copy {
     flex: none; min-width: 66px; font: 600 14px var(--round); color: var(--ink); background: var(--cream);
-    border: 0; border-radius: 10px; padding: 9px 12px; cursor: pointer; transition: transform 0.12s, background 0.2s;
+    border: 0; border-radius: 15px; padding: 9px 12px; cursor: pointer; transition: transform 0.12s, background 0.2s;
   }
   .copy:hover { background: #fff; }
   .copy:active { transform: scale(0.96); }
@@ -207,8 +216,13 @@
   .dialog .btns .primary { background: #3b82f6; color: #fff; }
 
   /* The real thing */
-  .real { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: clamp(28px, 6vw, 80px); align-items: center; }
-  .shot { margin: 0; }
+  /* Two rows: the screenshot and the text share row one, so they start and end level; the caption takes row two. */
+  .real { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); grid-template-rows: auto auto; column-gap: clamp(28px, 6vw, 80px); row-gap: 0; align-items: stretch; }
+  .shot { margin: 0; grid-column: 1; grid-row: 1 / 3; display: grid; grid-template-rows: subgrid; }
+  .shot img { align-self: start; }
+  .real-copy { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; }
+  .real-copy .eyebrow { line-height: 1; margin-top: -2px; }
+  .real-copy .facts { flex: 1; grid-auto-rows: 1fr; }
   .shot img { display: block; width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--line-strong); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9); }
   .shot figcaption { color: var(--faint); font-size: 13.5px; text-align: center; margin-top: 12px; }
   .facts { display: grid; gap: 12px; margin-top: 28px; }
@@ -229,16 +243,22 @@
   footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
   footer nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 
+  @media (max-width: 1100px) {
+    .real { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
+    .shot { grid-row: auto; display: block; max-width: 400px; margin-inline: auto; }
+    .real-copy { grid-column: 1; grid-row: auto; display: block; }
+    .real-copy .eyebrow { margin-top: 0; }
+  }
   @media (max-width: 900px) {
     .hero { grid-template-columns: minmax(0, 1fr); text-align: center; }
+    .pitch, .hint, .mac, .result { grid-column: 1; grid-row: auto; }
+    .pitch { display: block; margin-bottom: 28px; }
     .hero::before { inset: 20% 0 auto 0; }
-    .face { margin-inline: auto; }
-    .hero .sub, .hero .cmd { margin-inline: auto; }
+    .face { margin: 0 auto; }
+    .hero .sub, .get { margin-inline: auto; }
     .panel { margin-inline: auto; }
     .list li { grid-template-columns: 40px minmax(0, 1fr); }
     .list .viz { grid-column: 2; }
-    .real { grid-template-columns: minmax(0, 1fr); }
-    .shot { max-width: 400px; margin-inline: auto; }
     .more { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 520px) {
@@ -305,11 +325,13 @@
     </svg>
       <h1>Why is your Mac <em>sweating?</em></h1>
       <p class="sub">MacSweat sits in your menu bar and names what’s heating up or slowing down your Mac, so you can close it yourself.</p>
-      <div class="cmd" role="group" aria-label="Install command">
-      <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
-      <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
-    </div>
-      <p class="meta">Free and open source · macOS 13 or later · <a href="/install">Read the script</a></p>
+      <div class="get">
+        <p class="meta">Free and open source · macOS 13 or later · <a href="/install">Read the script</a></p>
+        <div class="cmd" role="group" aria-label="Install command">
+        <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
+        <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
+      </div>
+      </div>
     </div>
     <div class="demo" id="try">
       <p class="hint"><b>Try it.</b> This Mac is sweating. Find the culprit and press <strong>Stop</strong>.</p>
@@ -371,7 +393,7 @@
         <img src="assets/screenshot-dark.png?v=2" width="500" height="700" loading="lazy" alt="The real MacSweat panel: a verdict line, tiles for CPU, memory and heat, a list of background tasks, and apps sorted by CPU.">
         <figcaption>The real panel, captured from the app with sample data.</figcaption>
       </figure>
-      <div>
+      <div class="real-copy">
         <p class="eyebrow">The real thing</p>
         <h2 id="real-h">Small, native, and out of your way.</h2>
         <div class="facts">
