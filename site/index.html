@@ -70,7 +70,7 @@
   /* Nav */
   .nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
   .brand { display: inline-flex; align-items: center; gap: 10px; font: 600 17px var(--round); text-decoration: none; }
-  .brand svg { width: 30px; height: 30px; }
+  .brand svg { width: 30px; height: 30px; margin-left: -3px; }
   .nav nav { display: flex; gap: clamp(14px, 3vw, 28px); font-size: 15px; }
   .nav nav a { color: var(--muted); text-decoration: none; }
   .nav nav a:hover { color: var(--text); }
@@ -96,7 +96,6 @@
   /* The command box is the left column's bottom edge; its label sits above it, and both share the paragraph's width. */
   .get { max-width: 530px; margin-top: 28px; }
   .hero .cmd { margin-top: 10px; max-width: none; }
-  .hero .cmd code { font-size: 13px; }
   .meta { color: var(--faint); font-size: 14px; line-height: 1.3; }
   .meta a { color: var(--muted); }
   .hint { color: var(--muted); font-size: 15px; text-align: center; margin-bottom: 14px; }
@@ -114,7 +113,7 @@
     display: flex; align-items: center; gap: 10px; max-width: 610px;
     background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 7px 7px 7px 16px;
   }
-  .cmd code { flex: 1; min-width: 0; font: 13.5px/1.5 var(--mono); color: var(--cream); white-space: pre; overflow-x: auto; scrollbar-width: none; text-align: left; padding: 6px 0; }
+  .cmd code { flex: 1; min-width: 0; font: 13px/1.5 var(--mono); color: var(--cream); white-space: pre; overflow-x: auto; scrollbar-width: none; text-align: left; padding: 6px 0; }
   .cmd code::-webkit-scrollbar { display: none; }
   .cmd code::before { content: "$ "; color: var(--accent); user-select: none; -webkit-user-select: none; }
   .copy {
@@ -196,8 +195,11 @@
 
   /* What it does */
   .list { list-style: none; margin: clamp(28px, 5vw, 52px) 0 0; padding: 0; border-top: 1px solid var(--line); }
-  .list li { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(0, 400px); gap: 16px 28px; padding: clamp(22px, 3.2vw, 32px) 0; border-bottom: 1px solid var(--line); align-items: center; }
-  .list .n { font: 600 14px var(--mono); color: var(--accent); align-self: start; padding-top: 8px; }
+  .list li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: 16px 28px; padding: clamp(22px, 3.2vw, 32px) 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .item { display: grid; grid-template-columns: 52px minmax(0, 1fr); column-gap: 28px; align-items: baseline; }
+  .item .n { grid-column: 1; grid-row: 1; font: 600 14px var(--mono); color: var(--accent); }
+  .item h3 { grid-column: 2; grid-row: 1; }
+  .item p { grid-column: 2; grid-row: 2; }
   .list h3 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); font-weight: 650; }
   .list p { color: var(--muted); margin-top: 8px; max-width: 30em; }
   .viz { background: #1f1f22; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; padding: 14px; font: 13px/1.35 var(--sans); box-shadow: 0 18px 36px -22px rgba(0, 0, 0, 0.9); }
@@ -210,7 +212,8 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chips span { font-size: 11px; color: var(--faint); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
   .arrow { color: var(--accent); text-align: center; font-size: 15px; line-height: 1; margin: 8px 0 6px; }
-  .dialog { max-width: 300px; margin-inline: auto; text-align: center; padding: 18px; }
+  .dialog { text-align: center; padding: 18px; }
+  .dialog > * { max-width: 264px; margin-inline: auto; }
   .dialog .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
   .dialog .btns span { border-radius: 7px; padding: 5px 8px; background: rgba(255, 255, 255, 0.12); font-weight: 500; }
   .dialog .btns .primary { background: #3b82f6; color: #fff; }
@@ -232,7 +235,7 @@
 
   /* Install */
   .install { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: clamp(26px, 5vw, 56px); text-align: center; }
-  .install .cmd { margin: 28px auto 0; background: var(--bg); max-width: 580px; }
+  .install .cmd { margin: 28px auto 0; background: var(--bg); max-width: 530px; }
   .install .lead { margin-inline: auto; }
   .more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 40px; text-align: left; border-top: 1px solid var(--line); padding-top: 30px; }
   .more h3 { font-size: 1rem; font-weight: 650; letter-spacing: -0.01em; }
@@ -257,18 +260,18 @@
     .face { margin: 0 auto; }
     .hero .sub, .get { margin-inline: auto; }
     .panel { margin-inline: auto; }
-    .list li { grid-template-columns: 40px minmax(0, 1fr); }
-    .list .viz { grid-column: 2; }
+    .list li { grid-template-columns: minmax(0, 1fr); }
+    .item { grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; }
+    .list .viz { margin-left: 56px; }
     .more { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 520px) {
     body { font-size: 16px; }
     .nav nav a.hide-s { display: none; }
     .panel { padding: 12px; }
-    .list li { grid-template-columns: minmax(0, 1fr); }
-    .list .n { padding-top: 0; }
-    .list .viz { grid-column: 1; }
-    .cmd code { font-size: 13px; }
+    .item { display: block; }
+    .item .n { display: block; margin-bottom: 6px; }
+    .list .viz { margin-left: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -363,24 +366,24 @@
       <p class="eyebrow">What it does</p>
       <h2 id="what-h">One click. One answer.</h2>
       <ol class="list">
-        <li><span class="n">01</span>
-          <div><h3>Names the culprit</h3><p>One sentence says what’s using the most CPU and memory. A dot beside it turns green, orange or red.</p></div>
+        <li>
+          <div class="item"><span class="n">01</span><h3>Names the culprit</h3><p>One sentence says what’s using the most CPU and memory. A dot beside it turns green, orange or red.</p></div>
           <div class="viz" aria-hidden="true"><div class="v-line"><span class="dot"></span><div><b class="vh">Your Mac is working hard</b><span class="vm">Next.js dev server is using the most CPU (386%).</span></div></div></div>
         </li>
-        <li><span class="n">02</span>
-          <div><h3>Cuts through helper soup</h3><p>Chrome’s 25 helpers count as Chrome. macOS services get plain names like “Spotlight indexing” and “iCloud sync”.</p></div>
+        <li>
+          <div class="item"><span class="n">02</span><h3>Cuts through helper soup</h3><p>Chrome’s 25 helpers count as Chrome. macOS services get plain names like “Spotlight indexing” and “iCloud sync”.</p></div>
           <div class="viz" aria-hidden="true">
             <div class="chips"><span>Helper</span><span>Helper (GPU)</span><span>Helper (Renderer)</span><span>Helper (Renderer)</span><span>Helper (Plugin)</span><span>+22 more</span></div>
             <div class="arrow">↓</div>
             <div class="row"><span class="ico" style="background:#3b7ded">G</span><div><strong>Google Chrome</strong></div><span class="num">64%</span><span class="num">3.4 GB</span></div>
           </div>
         </li>
-        <li><span class="n">03</span>
-          <div><h3>Finds what you forgot</h3><p>Dev servers and scripts left running, grouped by project. Each shows its project folder and how long it’s been up.</p></div>
+        <li>
+          <div class="item"><span class="n">03</span><h3>Finds what you forgot</h3><p>Dev servers and scripts left running, grouped by project. Each shows its project folder and how long it’s been up.</p></div>
           <div class="viz" aria-hidden="true"><div class="row"><span class="ico task">&gt;_</span><div><strong>Python</strong><em>price-scraper · <mark>up 2d 4h</mark></em></div><span class="num">0.4%</span><span class="num">212 MB</span></div></div>
         </li>
-        <li><span class="n">04</span>
-          <div><h3>You decide what closes</h3><p>Quit an app or stop a task right from the list. MacSweat asks first, and it never closes anything by itself.</p></div>
+        <li>
+          <div class="item"><span class="n">04</span><h3>You decide what closes</h3><p>Quit an app or stop a task right from the list. MacSweat asks first, and it never closes anything by itself.</p></div>
           <div class="viz dialog" aria-hidden="true"><b class="vh">Quit Mail?</b><span class="vm">Mail will quit normally, just like choosing Quit from its menu.</span><div class="btns"><span>Cancel</span><span class="primary">Quit Mail</span></div></div>
         </li>
       </ol>
