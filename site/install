@@ -9,7 +9,7 @@
 set -eu
 
 VERSION="1.0.0"
-SHA256="13fd219f6b75c6564d09c6998bad10d2d311e7dd4312ddfcfc5c0aace77635d4"
+SHA256="dbb3fec78bbe26af85a08c9e0246ec55b76251a8bf251bba52067105f3014ca2"
 URL="${MACSWEAT_DOWNLOAD_URL:-https://github.com/Parrtth/macsweat/releases/download/v$VERSION/MacSweat.zip}"
 
 say() { printf '%s\n' "$*"; }
