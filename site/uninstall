@@ -1,0 +1,31 @@
+#!/bin/sh
+# MacSweat uninstaller — https://macsweat.parthh.dev
+#
+#   curl -fsSL https://macsweat.parthh.dev/uninstall | sh
+#
+# Quits MacSweat, removes it from Open at Login, deletes the app and its settings.
+set -eu
+
+main() {
+  if pgrep -x MacSweat >/dev/null 2>&1; then
+    pkill -x MacSweat 2>/dev/null || true
+    tries=0
+    while pgrep -x MacSweat >/dev/null 2>&1 && [ "$tries" -lt 20 ]; do sleep 0.25; tries=$((tries + 1)); done
+  fi
+  removed=no
+  for app in "/Applications/MacSweat.app" "$HOME/Applications/MacSweat.app"; do
+    [ -d "$app" ] || continue
+    "$app/Contents/MacOS/MacSweat" --login-item off >/dev/null 2>&1 || true
+    rm -rf "$app"
+    printf 'Removed %s\n' "$app"
+    removed=yes
+  done
+  defaults delete dev.parthh.macsweat >/dev/null 2>&1 || true
+  if [ "$removed" = yes ]; then
+    printf 'MacSweat is uninstalled. Thanks for trying it!\n'
+  else
+    printf "MacSweat wasn't installed, so there was nothing to remove.\n"
+  fi
+}
+
+main "$@"

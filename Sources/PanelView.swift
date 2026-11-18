@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-struct PulseView: View {
+struct PanelView: View {
     @ObservedObject var model: MonitorModel
     @AppStorage("sortByMemory") private var sortByMemory = false
     @State private var showAllTasks = false
@@ -152,8 +152,10 @@ struct PulseView: View {
             Button("Find Heavy Browser Tabs…") { Actions.showBrowserTabsHelp() }
             Divider()
             Toggle("Open at Login", isOn: Binding(get: { model.openAtLogin }, set: { model.setOpenAtLogin($0) }))
+            Button("Check for Updates…") { Actions.checkForUpdates() }
             Divider()
-            Button("Quit Mac Pulse") { NSApp.terminate(nil) }
+            Text("MacSweat \(Brand.version)")
+            Button("Quit MacSweat") { NSApp.terminate(nil) }
         } label: {
             Image(systemName: "ellipsis.circle").font(.system(size: 16))
         }
@@ -236,11 +238,11 @@ struct UsageRow: View {
             var parts: [String] = []
             if let folder = app.folder { parts.append((folder as NSString).lastPathComponent) }
             if let time = app.runningFor { parts.append("up \(durationLabel(time))") }
-            parts.append(app.launchedBy.map { "started by \($0)" } ?? "running on its own")
+            parts.append(app.launchedBy.map { "via \($0)" } ?? "on its own")
             return parts.joined(separator: " · ")
         case .app:
             if app.isSelf { return "This app" }
-            if app.isBrowser { return "Browser · \(processCount) · right-click for tabs" }
+            if app.isBrowser { return "Browser · \(processCount)" }
             return app.canQuit ? "App · \(processCount)" : "Runs in the background · \(processCount)"
         case .system:
             return app.hint ?? "Part of macOS"
@@ -253,7 +255,7 @@ struct UsageRow: View {
         var lines: [String] = []
         switch app.kind {
         case .app where app.isSelf:
-            lines.append("Mac Pulse itself.")
+            lines.append("MacSweat itself.")
         case .app:
             lines.append(app.canQuit ? "You can quit this app if you aren’t using it — hover and click Quit, or right-click."
                                      : "This app doesn’t have a normal Quit.")
@@ -352,8 +354,11 @@ final class IconCache {
 
 /// Everything here acts only after the person confirms, and only in ways they could do themselves.
 enum Actions {
+    /// `--demo`: sample data for screenshots; Quit and Stop do nothing.
+    static var demoMode = false
+
     static func quit(_ app: AppUsage) {
-        guard let bundleID = app.bundleID else { return }
+        guard !demoMode, let bundleID = app.bundleID else { return }
         let running = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
         guard !running.isEmpty, confirm(
             title: "Quit \(app.name)?",
@@ -363,16 +368,63 @@ enum Actions {
     }
 
     static func stop(_ task: AppUsage) {
+        guard !demoMode else { return }
         let place = task.folder.map { " in \(abbreviatedPath($0))" } ?? ""
         let count = task.pids.count == 1 ? "its process" : "its \(task.pids.count) processes"
         guard confirm(title: "Stop \(task.name)\(place)?",
-                      message: "Mac Pulse will send \(count) a normal stop signal, like pressing Control-C in its terminal.",
+                      message: "MacSweat will send \(count) a normal stop signal, like pressing Control-C in its terminal.",
                       button: "Stop") else { return }
         // The row can be seconds old and the dialog may sit open, so only signal processes that are
         // still the same ones (same start time) — never a reused process ID.
         for (pid, started) in task.startTimes where SystemMonitor.startTime(of: pid) == started {
             kill(pid, SIGTERM)
         }
+    }
+
+    /// The only network request MacSweat makes, and only when asked: GitHub's latest release tag.
+    static func checkForUpdates() {
+        var request = URLRequest(url: URL(string: "https://api.github.com/repos/\(Brand.repository)/releases/latest")!)
+        request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 15
+        URLSession.shared.dataTask(with: request) { data, response, _ in
+            let ok = (response as? HTTPURLResponse)?.statusCode == 200
+            let json = ok ? data.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] } : nil
+            let tag = json?["tag_name"] as? String
+            let notes = (json?["html_url"] as? String).flatMap(URL.init(string:))
+            DispatchQueue.main.async {
+                guard let tag else {
+                    inform("Couldn’t check for updates", "GitHub didn’t answer. Check your connection and try again later.")
+                    return
+                }
+                let latest = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
+                guard isVersion(latest, newerThan: Brand.version) else {
+                    inform("You’re up to date", "MacSweat \(Brand.version) is the latest version.")
+                    return
+                }
+                let alert = NSAlert()
+                alert.messageText = "MacSweat \(latest) is available"
+                alert.informativeText = "You have \(Brand.version). To update, paste this into Terminal — it’s the same command you installed with:\n\n\(Brand.installCommand)"
+                alert.addButton(withTitle: "Copy Command")
+                alert.addButton(withTitle: "What’s New")
+                alert.addButton(withTitle: "Later")
+                activate()
+                switch alert.runModal() {
+                case .alertFirstButtonReturn: copy(Brand.installCommand)
+                case .alertSecondButtonReturn: if let notes { NSWorkspace.shared.open(notes) }
+                default: break
+                }
+            }
+        }.resume()
+    }
+
+    static func isVersion(_ candidate: String, newerThan current: String) -> Bool {
+        let a = candidate.split(separator: ".").map { Int($0) ?? 0 }
+        let b = current.split(separator: ".").map { Int($0) ?? 0 }
+        for index in 0..<max(a.count, b.count) {
+            let x = index < a.count ? a[index] : 0, y = index < b.count ? b[index] : 0
+            if x != y { return x > y }
+        }
+        return false
     }
 
     static func showBrowserTabsHelp() {

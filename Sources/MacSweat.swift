@@ -1,4 +1,5 @@
 import AppKit
+import ServiceManagement
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
@@ -17,11 +18,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             button.target = self
             button.action = #selector(statusItemClicked)
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-            button.setAccessibilityLabel("Mac Pulse")
+            button.setAccessibilityLabel("MacSweat")
         }
         popover.behavior = .transient
         popover.delegate = self
-        popover.contentViewController = NSHostingController(rootView: PulseView(model: model))
+        popover.contentViewController = NSHostingController(rootView: PanelView(model: model))
         popover.contentSize = NSSize(width: 500, height: 700)
         model.onChange = { [weak self] in self?.refreshStatusItem() }
         refreshStatusItem()
@@ -68,22 +69,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private func showStatusMenu() {
         guard let button = statusItem.button else { return }
         let menu = NSMenu()
-        menu.addItem(withTitle: "Show Mac Pulse", action: #selector(showPopover), keyEquivalent: "").target = self
+        menu.addItem(withTitle: "Show MacSweat", action: #selector(showPopover), keyEquivalent: "").target = self
         menu.addItem(withTitle: "Open Activity Monitor", action: #selector(openActivityMonitor), keyEquivalent: "").target = self
+        menu.addItem(withTitle: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "").target = self
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Quit Mac Pulse", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: "Quit MacSweat", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.height + 5), in: button)
     }
 
     @objc private func openActivityMonitor() { Actions.openActivityMonitor() }
+    @objc private func checkForUpdates() { Actions.checkForUpdates() }
 
     private func refreshStatusItem() {
         guard let button = statusItem.button else { return }
         let summary = Summary.make(system: model.system, scan: model.scan)
-        let symbol = summary.severity == .strained ? summary.symbol : "waveform.path.ecg"
+        let symbol = summary.severity == .strained ? summary.symbol : Brand.symbol
         if symbol != currentSymbol {
-            let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Mac Pulse")
-                ?? NSImage(systemSymbolName: "waveform.path.ecg", accessibilityDescription: "Mac Pulse")
+            let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "MacSweat")
+                ?? NSImage(systemSymbolName: Brand.symbol, accessibilityDescription: "MacSweat")
             image?.isTemplate = true
             button.image = image
             currentSymbol = symbol
@@ -111,7 +114,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             try? rep.representation(using: .png, properties: [:])?.write(to: directory.appendingPathComponent(name))
         }
         // The popover itself is translucent, so render the same view on an opaque window background.
-        let host = NSHostingView(rootView: PulseView(model: model).background(Color(nsColor: .windowBackgroundColor)))
+        let host = NSHostingView(rootView: PanelView(model: model).background(Color(nsColor: .windowBackgroundColor)))
         host.frame = NSRect(x: 0, y: 0, width: 500, height: 700)
         let window = NSWindow(contentRect: host.frame, styleMask: .borderless, backing: .buffered, defer: false)
         window.appearance = NSApp.appearance
@@ -173,11 +176,45 @@ enum Diagnostics {
     }
 }
 
+/// `--login-item on|off|status`: the same switch as "Open at Login" in the ⋯ menu, for scripts.
+/// macOS registers the app that runs this, so run it from the copy in /Applications.
+enum LoginItem {
+    static func run(_ command: String) -> Int32 {
+        let service = SMAppService.mainApp
+        do {
+            switch command {
+            case "on": try service.register()
+            case "off": try service.unregister()
+            case "status": break
+            default:
+                fputs("usage: MacSweat --login-item on|off|status\n", stderr)
+                return 2
+            }
+        } catch {
+            fputs("Couldn’t change Open at Login: \(error.localizedDescription)\n", stderr)
+            return 1
+        }
+        let status = switch service.status {
+        case .enabled: "on"
+        case .notRegistered: "off"
+        case .requiresApproval: "needs approval in System Settings ▸ General ▸ Login Items"
+        case .notFound: "not found"
+        @unknown default: "unknown"
+        }
+        print("Open at Login: \(status) (\(Bundle.main.bundlePath))")
+        return 0
+    }
+}
+
 @main
-struct MacPulseMain {
+struct MacSweatMain {
     static func main() {
         let arguments = CommandLine.arguments
         if arguments.contains("--check") { exit(Diagnostics.check()) }
+        if let index = arguments.firstIndex(of: "--login-item") {
+            exit(LoginItem.run(index + 1 < arguments.count ? arguments[index + 1] : "status"))
+        }
+        Actions.demoMode = arguments.contains("--demo")
         let application = NSApplication.shared
         application.setActivationPolicy(.accessory)
         let delegate = AppDelegate()

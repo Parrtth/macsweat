@@ -2,6 +2,16 @@ import AppKit
 import ServiceManagement
 import SwiftUI
 
+/// Everything public-facing about the app lives here, so a rename or a move is one edit.
+enum Brand {
+    static let name = "MacSweat"
+    static let symbol = "drop.fill"
+    static let repository = "Parrtth/macsweat"
+    static let website = URL(string: "https://macsweat.parthh.dev")!
+    static let installCommand = "curl -fsSL https://macsweat.parthh.dev/install | sh"
+    static var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev" }
+}
+
 /// Samples on a background queue and publishes snapshots on the main thread.
 /// While the popover is closed only the cheap whole-Mac counters run often; the process list
 /// is refreshed every few seconds while it's open and occasionally otherwise.
@@ -17,7 +27,7 @@ final class MonitorModel: ObservableObject {
     var onChange: (() -> Void)?
 
     private let monitor = SystemMonitor()
-    private let queue = DispatchQueue(label: "MacPulse.sampling", qos: .utility)
+    private let queue = DispatchQueue(label: "MacSweat.sampling", qos: .utility)
     private var timer: DispatchSourceTimer?
     // Only touched on `queue`.
     private var visible = false
@@ -25,6 +35,13 @@ final class MonitorModel: ObservableObject {
     private var lastScan: TimeInterval = 0
 
     func start() {
+        if Actions.demoMode { // fixed sample data for screenshots — nothing is sampled
+            system = DemoData.system
+            scan = DemoData.scan
+            cpuHistory = DemoData.history
+            onChange?()
+            return
+        }
         let timer = DispatchSource.makeTimerSource(queue: queue)
         timer.setEventHandler { [weak self] in self?.tick() }
         timer.schedule(deadline: .now() + 1.5, repeating: Self.closedInterval, leeway: .milliseconds(500))
@@ -34,6 +51,7 @@ final class MonitorModel: ObservableObject {
     }
 
     func setVisible(_ isVisible: Bool) {
+        guard !Actions.demoMode else { return }
         queue.async { [weak self] in
             guard let self else { return }
             self.visible = isVisible
@@ -107,15 +125,22 @@ struct Summary {
 
     static func make(system: SystemReading?, scan: ProcessScan?) -> Summary {
         guard let system else {
-            return Summary(severity: .calm, headline: "Taking the first reading…", detail: "", symbol: "waveform.path.ecg")
+            return Summary(severity: .calm, headline: "Taking the first reading…", detail: "", symbol: Brand.symbol)
         }
         let groups = scan?.groups ?? []
         let topCPU = scan?.cpuMeasured == true ? groups.max { $0.cpu < $1.cpu } : nil
         let topMemory = groups.max { $0.memory < $1.memory }
-        let cpuNote = topCPU.flatMap { $0.cpu >= 20 ? "\($0.name) is using the most CPU (\(cpuLabel($0.cpu)))." : nil }
-        let memoryNote = topMemory.map { "\($0.name) is using the most memory (\(memoryLabel($0.memory)))." }
+        var cpuNote = topCPU.flatMap { $0.cpu >= 20 ? "\($0.name) is using the most CPU (\(cpuLabel($0.cpu)))." : nil }
+        var memoryNote = topMemory.map { "\($0.name) is using the most memory (\(memoryLabel($0.memory)))." }
+        if let top = topCPU, top.cpu >= 20, top.id == topMemory?.id { // one culprit: say its name once
+            cpuNote = "\(top.name) is using the most CPU (\(cpuLabel(top.cpu))) and memory (\(memoryLabel(top.memory)))."
+            memoryNote = cpuNote
+        }
         let cpu = system.cpu ?? 0
-        func join(_ parts: String?...) -> String { parts.compactMap { $0 }.joined(separator: " ") }
+        func join(_ parts: String?...) -> String {
+            var seen = Set<String>()
+            return parts.compactMap { $0 }.filter { seen.insert($0).inserted }.joined(separator: " ")
+        }
 
         if system.thermal == .serious || system.thermal == .critical {
             return Summary(severity: .strained, headline: "Your Mac is running hot",
@@ -132,7 +157,7 @@ struct Summary {
         }
         if cpu >= 40 {
             return Summary(severity: .busy, headline: "Your Mac is fairly busy", detail: join(cpuNote, memoryNote),
-                           symbol: "waveform.path.ecg")
+                           symbol: Brand.symbol)
         }
         if system.pressure == .elevated {
             return Summary(severity: .busy, headline: "Memory is getting full",
@@ -143,7 +168,7 @@ struct Summary {
                            symbol: "thermometer.medium")
         }
         return Summary(severity: .calm, headline: "Your Mac is taking it easy",
-                       detail: join(cpuNote ?? "Nothing is using much CPU.", memoryNote), symbol: "waveform.path.ecg")
+                       detail: join(cpuNote ?? "Nothing is using much CPU.", memoryNote), symbol: Brand.symbol)
     }
 }
 
