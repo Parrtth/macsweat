@@ -85,9 +85,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         let summary = Summary.make(system: model.system, scan: model.scan)
         let symbol = summary.severity == .strained ? summary.symbol : Brand.symbol
         if symbol != currentSymbol {
-            let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "MacSweat")
-                ?? NSImage(systemSymbolName: Brand.symbol, accessibilityDescription: "MacSweat")
-            image?.isTemplate = true
+            let image = symbol == Brand.symbol ? BrandGlyph.menuBar
+                : (NSImage(systemSymbolName: symbol, accessibilityDescription: "MacSweat") ?? BrandGlyph.menuBar)
+            image.isTemplate = true
             button.image = image
             currentSymbol = symbol
         }
@@ -204,6 +204,42 @@ enum LoginItem {
         print("Open at Login: \(status) (\(Bundle.main.bundlePath))")
         return 0
     }
+}
+
+/// The MacSweat mark (two eyes and a bead of sweat) as a menu bar template image.
+/// Same geometry as Tools/make-icon.swift, which draws it on a 1024 canvas.
+enum BrandGlyph {
+    static let menuBar: NSImage = {
+        let image = NSImage(size: NSSize(width: 22, height: 18), flipped: false) { rect in
+            guard let ctx = NSGraphicsContext.current?.cgContext else { return false }
+            // The face from the app icon (1024 canvas: x 258…770, y 368…772), fitted to the menu bar.
+            let scale = rect.height / 440
+            ctx.translateBy(x: rect.midX, y: rect.midY)
+            ctx.scaleBy(x: scale, y: scale)
+            ctx.translateBy(x: -514, y: -562)
+            // round eyes with pupils cut out, glancing up at the bead
+            for x in [336.0, 536.0] as [CGFloat] {
+                ctx.addEllipse(in: CGRect(x: x - 84, y: 462 - 98, width: 168, height: 196))
+                ctx.addEllipse(in: CGRect(x: x + 26 - 44, y: 462 + 34 - 44, width: 88, height: 88))
+            }
+            ctx.fillPath(using: .evenOdd)
+            // the bead of sweat, slightly larger than in the icon so it survives at 18 pt
+            ctx.translateBy(x: 716, y: 640)
+            ctx.rotate(by: -0.12)
+            ctx.addEllipse(in: CGRect(x: -66, y: -66, width: 132, height: 132))
+            ctx.move(to: CGPoint(x: 0, y: 142))
+            // wound the same way as the ellipse, so the overlap fills instead of cutting a gap
+            ctx.addCurve(to: CGPoint(x: -62, y: 24), control1: CGPoint(x: -18, y: 100), control2: CGPoint(x: -62, y: 62))
+            ctx.addLine(to: CGPoint(x: 62, y: 24))
+            ctx.addCurve(to: CGPoint(x: 0, y: 142), control1: CGPoint(x: 62, y: 62), control2: CGPoint(x: 18, y: 100))
+            ctx.closePath()
+            ctx.setFillColor(NSColor.black.cgColor)
+            ctx.fillPath()
+            return true
+        }
+        image.accessibilityDescription = "MacSweat"
+        return image
+    }()
 }
 
 @main
