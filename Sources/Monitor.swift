@@ -516,7 +516,7 @@ final class SystemMonitor {
         let data = output.fileHandleForReading.readDataToEndOfFile()
         process.waitUntilExit()
         guard !data.isEmpty else {
-            throw NSError(domain: "MacPulse", code: Int(process.terminationStatus),
+            throw NSError(domain: "MacSweat", code: Int(process.terminationStatus),
                           userInfo: [NSLocalizedDescriptionKey: "ps exited with status \(process.terminationStatus)"])
         }
         return String(decoding: data, as: UTF8.self)
