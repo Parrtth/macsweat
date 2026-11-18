@@ -56,21 +56,22 @@ struct PanelView: View {
     private var tiles: some View {
         let system = model.system
         let cpu = system?.cpu
-        let swap = system?.swapUsed.map(memoryLabel) ?? "—"
+        let pressure = system?.pressure
+        // Memory pressure is folded into the Memory tile: it changes colour and says so in plain words.
+        var memoryNote = system.map { "of \(memoryLabel($0.totalMemory))" } ?? ""
+        if pressure == .elevated { memoryNote = "Getting full" }
+        if pressure == .high { memoryNote = "Almost full" }
+        let swap = system?.swapUsed.map(memoryLabel) ?? "unknown"
         return HStack(spacing: 8) {
-            Tile(title: "CPU", value: cpu.map { String(format: "%.0f%%", $0) } ?? "…", detail: "of \(cores) cores",
+            Tile(title: "CPU", value: cpu.map { String(format: "%.0f%%", $0) } ?? "…", detail: "",
                  tone: (cpu ?? 0) >= 75 ? .critical : (cpu ?? 0) >= 40 ? .warning : .normal) {
                 Sparkline(values: model.cpuHistory)
             }
-            .help("Whole-Mac CPU use. The line shows the last few minutes.")
-            Tile(title: "Memory", value: system.map { memoryLabel($0.usedMemory) } ?? "…",
-                 detail: system.map { "of \(memoryLabel($0.totalMemory))" } ?? " ", tone: .normal)
-                .help("Memory in use by apps, macOS and compression — the same figure as Activity Monitor.")
-            Tile(title: "Pressure", value: system?.pressure.label ?? "…", detail: "swap \(swap)",
-                 tone: system?.pressure == .high ? .critical : system?.pressure == .elevated ? .warning : .normal)
-                .help("How hard macOS is working to fit everything in memory. High pressure makes everything slower.")
-            Tile(title: "Heat", value: system?.thermal.label ?? "…", detail: "thermal state",
-                 tone: thermalTone(system?.thermal))
+            .help("Whole-Mac CPU use across \(cores) cores. The line shows the last few minutes.")
+            Tile(title: "Memory", value: system.map { memoryLabel($0.usedMemory) } ?? "…", detail: memoryNote,
+                 tone: pressure == .high ? .critical : pressure == .elevated ? .warning : .normal)
+                .help("Memory in use\(system.map { " of \(memoryLabel($0.totalMemory))" } ?? ""), the same figure as Activity Monitor. It turns orange or red when macOS is struggling to fit everything in.\nMemory pressure: \(pressure?.label ?? "unknown") · Swap used: \(swap)")
+            Tile(title: "Heat", value: system?.thermal.label ?? "…", detail: "", tone: thermalTone(system?.thermal))
                 .help("macOS’s thermal state. When it’s Hot, macOS slows the processor down to cool off.")
         }
     }
@@ -85,11 +86,8 @@ struct PanelView: View {
 
     private var tasksSection: some View {
         VStack(alignment: .leading, spacing: 2) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Background tasks").font(.headline)
-                Text("dev servers & scripts").font(.caption).foregroundStyle(.secondary)
-            }
-            .padding(.bottom, 2)
+            Text("Background tasks").font(.headline).padding(.bottom, 2)
+                .help("Dev servers and scripts running outside an app, grouped by project folder.")
             if model.scan == nil {
                 Text("Looking…").font(.callout).foregroundStyle(.secondary)
             } else if tasks.isEmpty {
@@ -137,9 +135,6 @@ struct PanelView: View {
         HStack(spacing: 4) {
             Image(systemName: "lock.shield").accessibilityHidden(true)
             Text("Stays on this Mac")
-            if let time = model.system?.timestamp {
-                Text("· Updated \(time.formatted(date: .omitted, time: .standard))").monospacedDigit()
-            }
             Spacer()
             Button("Open Activity Monitor") { Actions.openActivityMonitor() }.buttonStyle(.link)
         }
@@ -175,13 +170,15 @@ struct UsageRow: View {
             icon.frame(width: 24, height: 24)
             VStack(alignment: .leading, spacing: 1) {
                 Text(app.name).font(.system(size: 13, weight: .medium)).lineLimit(1).truncationMode(.middle)
-                Text(subtitle).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
+                if let subtitle {
+                    Text(subtitle).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
+                }
             }
             Spacer(minLength: 6)
             Text(measured ? cpuLabel(app.cpu) : "—")
                 .foregroundStyle(app.cpu >= 300 ? Color.red : app.cpu >= 100 ? Color.orange : Color.primary)
                 .frame(width: 52, alignment: .trailing)
-            Text((app.memoryEstimated && app.kind != .app ? "≈" : "") + memoryLabel(app.memory))
+            Text(memoryLabel(app.memory))
                 .frame(width: 70, alignment: .trailing)
             action.frame(width: 46, alignment: .trailing)
         }
@@ -232,22 +229,22 @@ struct UsageRow: View {
 
     private var processCount: String { "\(app.pids.count) process\(app.pids.count == 1 ? "" : "es")" }
 
-    private var subtitle: String {
+    /// A second line only where it helps someone decide: which project a task belongs to and how long
+    /// it has run, or what a background service is. Everything else lives in the tooltip.
+    private var subtitle: String? {
         switch app.kind {
         case .task:
             var parts: [String] = []
             if let folder = app.folder { parts.append((folder as NSString).lastPathComponent) }
             if let time = app.runningFor { parts.append("up \(durationLabel(time))") }
-            parts.append(app.launchedBy.map { "via \($0)" } ?? "on its own")
-            return parts.joined(separator: " · ")
+            return parts.isEmpty ? nil : parts.joined(separator: " · ")
         case .app:
             if app.isSelf { return "This app" }
-            if app.isBrowser { return "Browser · \(processCount)" }
-            return app.canQuit ? "App · \(processCount)" : "Runs in the background · \(processCount)"
+            return app.canQuit ? nil : "Runs in the background"
         case .system:
             return app.hint ?? "Part of macOS"
         case .other:
-            return app.hint ?? "Background process · \(processCount)"
+            return app.hint ?? "Background process"
         }
     }
 
@@ -260,8 +257,10 @@ struct UsageRow: View {
             lines.append(app.canQuit ? "You can quit this app if you aren’t using it — hover and click Quit, or right-click."
                                      : "This app doesn’t have a normal Quit.")
             if app.isBrowser { lines.append("To see which tab is heavy: right-click → Find Heavy Tabs.") }
+            if app.pids.count > 1 { lines.append("Includes its helpers: \(processCount).") }
         case .task:
             if let folder = app.folder { lines.append("Folder: \(abbreviatedPath(folder))") }
+            lines.append(app.launchedBy.map { "Started by \($0)." } ?? "Not started by an app that’s still running.")
             lines.append("A developer task left running. Stop it if you aren’t using it — usually from its terminal with Control-C, or with Stop here.")
         case .system:
             lines.append((app.hint.map { $0 + " " } ?? "") + "Part of macOS — usually best left alone.")
@@ -301,11 +300,13 @@ struct Tile<Accessory: View>: View {
             Text(title).font(.caption).foregroundStyle(.secondary)
             Text(value).font(.system(size: 19, weight: .semibold, design: .rounded)).monospacedDigit()
                 .foregroundStyle(tone.color).lineLimit(1).minimumScaleFactor(0.6)
-            Text(detail).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            if !detail.isEmpty {
+                Text(detail).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            }
             Spacer(minLength: 0)
             accessory
         }
-        .frame(maxWidth: .infinity, minHeight: 70, maxHeight: 70, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: 58, maxHeight: 58, alignment: .topLeading)
         .padding(10)
         .background(RoundedRectangle(cornerRadius: 10).fill(Color.primary.opacity(0.05)))
         .accessibilityElement(children: .combine)
