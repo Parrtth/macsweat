@@ -1,5 +1,5 @@
 #!/bin/sh
-# MacSweat uninstaller — https://macsweat.parthh.dev
+# MacSweat uninstaller - https://macsweat.parthh.dev
 #
 #   curl -fsSL https://macsweat.parthh.dev/uninstall | sh
 #
