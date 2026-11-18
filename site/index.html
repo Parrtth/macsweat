@@ -4,10 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MacSweat — Why is your Mac sweating?</title>
-<meta name="description" content="MacSweat is a free, open-source menu bar app for macOS that shows, in one click, what's heating up or slowing down your Mac — so you can close it yourself.">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)">
+<meta name="description" content="MacSweat is a free, open-source menu bar app for macOS that names what's heating up or slowing down your Mac, so you can close it yourself.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0f0f10">
 <link rel="canonical" href="https://macsweat.parthh.dev/">
 <link rel="icon" type="image/png" href="assets/icon.png">
 <link rel="apple-touch-icon" href="assets/icon.png">
@@ -16,911 +15,513 @@
 <meta property="og:site_name" content="MacSweat">
 <meta property="og:url" content="https://macsweat.parthh.dev/">
 <meta property="og:title" content="MacSweat — Why is your Mac sweating?">
-<meta property="og:description" content="A free, open-source menu bar app that shows, in one click, what's heating up or slowing down your Mac — so you can close it yourself.">
-<meta property="og:image" content="https://macsweat.parthh.dev/assets/screenshot-light.png">
+<meta property="og:description" content="A free, open-source menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.">
+<meta property="og:image" content="https://macsweat.parthh.dev/assets/screenshot-dark.png">
 <meta property="og:image:width" content="1000">
 <meta property="og:image:height" content="1400">
 <meta property="og:image:alt" content="The MacSweat panel, open from the macOS menu bar.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MacSweat — Why is your Mac sweating?">
-<meta name="twitter:description" content="A free, open-source menu bar app that shows, in one click, what's heating up or slowing down your Mac — so you can close it yourself.">
-<meta name="twitter:image" content="https://macsweat.parthh.dev/assets/screenshot-light.png">
+<meta name="twitter:description" content="A free, open-source menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.">
+<meta name="twitter:image" content="https://macsweat.parthh.dev/assets/screenshot-dark.png">
 <meta name="twitter:image:alt" content="The MacSweat panel, open from the macOS menu bar.">
 
 <style>
   :root {
-    --bg: #fbfaf8;
-    --surface: #ffffff;
-    --band: #f4f1ec;
-    --text: #1d1d1f;
-    --text-2: #56555b;
-    --border: #e6e1d9;
-    --accent: #c2410c;
-    --accent-soft: #fdeee3;
-    --accent-glow: rgba(247, 150, 70, 0.22);
-    --grad: linear-gradient(135deg, #f7a23b 0%, #f2705a 100%);
-    --cmd-bg: #1d1d1f;
-    --cmd-border: #1d1d1f;
-    --cmd-text: #f5f5f7;
-    --cmd-prompt: #ffb27a;
-    --cmd-btn: rgba(255, 255, 255, 0.14);
-    --cmd-btn-hover: rgba(255, 255, 255, 0.24);
-    --focus: #c2410c;
-    --ok: #2f9e44;
-    --warn: #e8890c;
-    --bad: #e03131;
-    --shadow: 0 1px 2px rgba(29, 29, 31, 0.04), 0 8px 24px rgba(29, 29, 31, 0.05);
-    --shot-shadow: drop-shadow(0 24px 48px rgba(60, 40, 20, 0.18)) drop-shadow(0 4px 10px rgba(60, 40, 20, 0.08));
-    --radius: 18px;
-    --wrap: 1080px;
-    --gutter: clamp(16px, 4vw, 32px);
+    --bg: #0f0f10;
+    --surface: #19191b;
+    --surface-2: #222225;
+    --line: rgba(244, 228, 200, 0.10);
+    --line-strong: rgba(244, 228, 200, 0.18);
+    --text: #f4e9d6;
+    --muted: #a8a093;
+    --faint: #7b756b;
+    --cream: #f4e4c8;
+    --accent: #ff7a2f;
+    --accent-soft: rgba(255, 122, 47, 0.14);
+    --green: #5fd481;
+    --orange: #ff9f3f;
+    --red: #ff5f52;
+    --ink: #1b1b1d;
+    --round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #121110;
-      --surface: #1b1a19;
-      --band: #181716;
-      --text: #f5f5f7;
-      --text-2: #aba8a4;
-      --border: #2f2c2a;
-      --accent: #ffa36c;
-      --accent-soft: #2c1e15;
-      --accent-glow: rgba(247, 140, 70, 0.16);
-      --cmd-bg: #201e1c;
-      --cmd-border: #36322f;
-      --cmd-text: #f5f5f7;
-      --cmd-prompt: #ffa36c;
-      --focus: #ffa36c;
-      --ok: #40c057;
-      --warn: #fd9a2b;
-      --bad: #ff6b6b;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
-      --shot-shadow: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.5)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
-    }
-  }
-
   *, *::before, *::after { box-sizing: border-box; }
-
-  html {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-    scroll-behavior: smooth;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-  }
-
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 17px;
-    line-height: 1.55;
+    font: 17px/1.55 var(--sans);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-wrap: break-word;
+    overflow-x: hidden;
   }
-
-  img { max-width: 100%; height: auto; display: block; }
-
-  a { color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-  a:hover { text-decoration-thickness: 2px; }
-
-  :focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 3px;
-    border-radius: 6px;
-  }
-
-  h1, h2, h3 {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: var(--text);
-    margin: 0;
-    text-wrap: balance;
-  }
-
-  p { margin: 0; }
-
-  .wrap {
-    width: 100%;
-    max-width: calc(var(--wrap) + var(--gutter) * 2);
-    margin-inline: auto;
-    padding-inline: var(--gutter);
-  }
-
-  .sr-only {
-    position: absolute !important;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0 0 0 0);
-    white-space: nowrap; border: 0;
-  }
-
-  .skip {
-    position: absolute;
-    left: 12px; top: -100px;
-    z-index: 100;
-    padding: 10px 16px;
-    border-radius: 10px;
-    background: var(--text);
-    color: var(--bg);
-    font-weight: 600;
-    text-decoration: none;
-  }
+  a { color: inherit; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  h1, h2, h3 { font-family: var(--round); letter-spacing: -0.025em; line-height: 1.05; margin: 0; text-wrap: balance; }
+  p { margin: 0; text-wrap: pretty; }
+  .wrap { width: min(1140px, 100% - 40px); margin-inline: auto; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .skip { position: absolute; left: 16px; top: -60px; background: var(--cream); color: var(--ink); padding: 8px 14px; border-radius: 10px; z-index: 10; }
   .skip:focus { top: 12px; }
 
-  .eyebrow {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
+  /* Nav */
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font: 600 17px var(--round); text-decoration: none; }
+  .brand svg { width: 30px; height: 30px; }
+  .nav nav { display: flex; gap: clamp(14px, 3vw, 28px); font-size: 15px; }
+  .nav nav a { color: var(--muted); text-decoration: none; }
+  .nav nav a:hover { color: var(--text); }
 
-  /* Header */
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: var(--bg);
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    -webkit-backdrop-filter: saturate(180%) blur(16px);
-    backdrop-filter: saturate(180%) blur(16px);
-    border-bottom: 1px solid var(--border);
+  /* Hero: the pitch on the left, the live demo on the right */
+  .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr); gap: clamp(28px, 4.5vw, 60px); align-items: center; padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 7vw, 88px); }
+  .hero::before {
+    content: ""; position: absolute; inset: -120px 0 auto 30%; height: 760px; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(255, 122, 47, 0.17), transparent);
+    transition: opacity 0.8s;
   }
-  .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 60px;
-  }
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 650;
-    font-size: 1.0625rem;
-    letter-spacing: -0.01em;
-  }
-  .brand img { width: 28px; height: 28px; border-radius: 7px; }
-  .nav ul {
-    display: flex;
-    gap: clamp(14px, 3vw, 28px);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .nav ul a {
-    color: var(--text-2);
-    text-decoration: none;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    padding: 6px 2px;
-  }
-  .nav ul a:hover { color: var(--text); }
+  .calm .hero::before { opacity: 0.3; }
+  .face { display: block; width: clamp(88px, 9vw, 116px); height: auto; margin-left: -10px; filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55)); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.3rem); font-weight: 700; margin-top: 14px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero .sub { color: var(--muted); font-size: clamp(1.05rem, 1.7vw, 1.22rem); max-width: 27em; margin-top: 18px; }
+  .hero .cmd { margin-top: 30px; }
+  .meta { color: var(--faint); font-size: 14px; margin-top: 14px; }
+  .meta a { color: var(--muted); }
+  .hint { color: var(--muted); font-size: 15px; text-align: center; margin-bottom: 14px; }
+  .hint b { font-family: var(--round); color: var(--accent); }
+  .hint strong { color: var(--text); }
+  .result { margin-top: 16px; min-height: 62px; text-align: center; }
+  .result p { font: 600 clamp(1.15rem, 2vw, 1.4rem)/1.2 var(--round); color: var(--green); }
+  .result small { display: block; color: var(--muted); font-size: 14.5px; margin-top: 6px; }
+  .result[hidden] { display: block; visibility: hidden; }
+  .linkbtn { font: inherit; color: var(--text); background: none; border: 0; padding: 0; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; cursor: pointer; }
+  .linkbtn:hover { text-decoration-color: var(--accent); }
 
-  section[id] { scroll-margin-top: 72px; }
-
-  /* Hero */
-  .hero {
-    position: relative;
-    padding-block: clamp(48px, 8vw, 104px) clamp(56px, 9vw, 112px);
-    overflow: hidden;
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-    align-items: center;
-    gap: clamp(40px, 6vw, 72px);
-  }
-  .hero h1 {
-    font-size: clamp(2.5rem, 6.2vw, 4.25rem);
-    line-height: 1.04;
-    letter-spacing: -0.035em;
-    font-weight: 700;
-  }
-  .lede {
-    margin-top: 20px;
-    font-size: clamp(1.125rem, 1.9vw, 1.3125rem);
-    line-height: 1.5;
-    color: var(--text-2);
-    max-width: 34em;
-  }
-  .install-label {
-    margin-top: 32px;
-    margin-bottom: 10px;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .meta {
-    margin-top: 14px;
-    font-size: 0.9375rem;
-    color: var(--text-2);
-  }
-  .nw { white-space: nowrap; }
-  .meta-links {
-    margin-top: 6px;
-    font-size: 0.9375rem;
-    color: var(--text-2);
-  }
-
-  .hero-shot {
-    position: relative;
-    display: flex;
-    justify-content: center;
-  }
-  .hero-shot::before {
-    content: "";
-    position: absolute;
-    inset: 8% -6% 4%;
-    background: radial-gradient(closest-side, var(--accent-glow), transparent);
-    z-index: 0;
-    pointer-events: none;
-  }
-  .hero-shot picture { position: relative; z-index: 1; width: 100%; max-width: 500px; }
-  .hero-shot img {
-    width: 100%;
-    max-width: 500px;
-    margin-inline: auto;
-    filter: var(--shot-shadow);
-  }
-
-  /* Command blocks */
+  /* Command block */
   .cmd {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    max-width: 600px;
-    padding: 10px 10px 10px 18px;
-    background: var(--cmd-bg);
-    color: var(--cmd-text);
-    border: 1px solid var(--cmd-border);
-    border-radius: 14px;
+    display: flex; align-items: center; gap: 10px; max-width: 610px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 7px 7px 7px 16px;
   }
-  .cmd code {
-    flex: 1 1 auto;
-    min-width: 0;
-    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    /* Wrap only at spaces, never inside the URL; on phones keep one line and scroll inside the box. */
-    white-space: pre-wrap;
-    overflow-wrap: normal;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    padding-block: 4px;
-  }
-  .cmd code::before {
-    content: "$ ";
-    content: "$ " / "";
-    color: var(--cmd-prompt);
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  .hero .cmd code { font-size: 0.875rem; }
+  .cmd code { flex: 1; min-width: 0; font: 13.5px/1.5 var(--mono); color: var(--cream); white-space: pre; overflow-x: auto; scrollbar-width: none; text-align: left; padding: 6px 0; }
+  .cmd code::-webkit-scrollbar { display: none; }
+  .cmd code::before { content: "$ "; color: var(--accent); user-select: none; -webkit-user-select: none; }
   .copy {
-    flex: none;
-    min-width: 76px;
-    min-height: 36px;
-    padding: 6px 14px;
-    border: 0;
-    border-radius: 9px;
-    background: var(--cmd-btn);
-    color: var(--cmd-text);
-    font: inherit;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
+    flex: none; min-width: 66px; font: 600 14px var(--round); color: var(--ink); background: var(--cream);
+    border: 0; border-radius: 10px; padding: 9px 12px; cursor: pointer; transition: transform 0.12s, background 0.2s;
   }
-  .copy:hover { background: var(--cmd-btn-hover); }
-  .copy:focus-visible { outline-color: var(--cmd-prompt); outline-offset: 2px; }
-  .copy.is-copied { background: var(--grad); color: #1d1d1f; }
+  .copy:hover { background: #fff; }
+  .copy:active { transform: scale(0.96); }
+  .copy.done { background: var(--green); }
+  .linkbtn.done { color: var(--green); }
+
+  /* The face */
+  .face .pupils { animation: glance 7s ease-in-out infinite; }
+  .face .bead { transform-box: fill-box; transform-origin: 50% 0; animation: drip 3.2s cubic-bezier(0.5, 0, 0.8, 0.4) infinite; }
+  .face .smile { opacity: 0; }
+  .face .wobble, .face .smile, .face .bead-wrap { transition: opacity 0.5s; }
+  .calm .face .bead-wrap { opacity: 0; }
+  .calm .face .wobble { opacity: 0; }
+  .calm .face .smile { opacity: 1; }
+  .calm .face .pupils { animation: none; transform: translate(-24px, 30px); transition: transform 0.5s; }
+  @keyframes glance {
+    0%, 52%, 100% { transform: translate(0, 0); }
+    58%, 70% { transform: translate(-46px, 34px); }
+    76%, 88% { transform: translate(-2px, 52px); }
+  }
+  @keyframes drip {
+    0%, 30% { transform: translateY(0) scale(1); opacity: 1; }
+    80% { transform: translateY(150px) scale(0.92); opacity: 1; }
+    92% { transform: translateY(190px) scale(0.8); opacity: 0; }
+    93% { transform: translateY(0) scale(0.2); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
 
   /* Sections */
-  .section { padding-block: clamp(64px, 10vw, 120px); }
-  .band {
-    background: var(--band);
-    border-block: 1px solid var(--border);
-  }
-  .section-head { max-width: 40em; margin-bottom: clamp(32px, 5vw, 56px); }
-  .section-head h2,
-  .privacy h2 {
-    font-size: clamp(1.875rem, 4vw, 2.75rem);
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-    font-weight: 700;
-  }
-  .section-head p.sub,
-  .privacy p.sub {
-    margin-top: 16px;
-    font-size: 1.125rem;
-    color: var(--text-2);
-  }
+  section { padding: clamp(56px, 9vw, 110px) 0; }
+  .eyebrow { font: 600 13px var(--round); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  h2 { font-size: clamp(2rem, 5.2vw, 3.3rem); font-weight: 700; }
+  .lead { color: var(--muted); font-size: clamp(1.02rem, 1.8vw, 1.18rem); max-width: 32em; margin-top: 16px; }
 
-  /* Feature cards */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 26px 24px 28px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-  .card h3 {
-    font-size: 1.1875rem;
-    line-height: 1.3;
-    letter-spacing: -0.012em;
-    font-weight: 650;
-  }
-  .card p { color: var(--text-2); font-size: 1rem; }
-  .icon {
-    display: grid;
-    place-items: center;
-    width: 40px; height: 40px;
-    margin-bottom: 6px;
-    border-radius: 11px;
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-  .icon svg {
-    width: 22px; height: 22px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
+  /* The demo Mac */
+  .mac { text-align: left; background: linear-gradient(160deg, #2a211c, #16161a 55%, #131318); border: 1px solid var(--line); border-radius: 22px; padding: 0 clamp(10px, 2vw, 18px) clamp(14px, 2.4vw, 22px); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8); }
+  .menubar { display: flex; justify-content: flex-end; align-items: center; height: 34px; font: 500 13px var(--sans); color: rgba(244, 233, 214, 0.78); padding: 0 4px; }
+  .menubar .right { display: flex; gap: 14px; align-items: center; flex: none; }
+  .status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: 7px; background: rgba(255, 255, 255, 0.12); color: var(--text); font-variant-numeric: tabular-nums; transition: color 0.4s; }
+  .status svg { width: 20px; height: 16px; }
+  .status.hot { color: var(--red); }
 
-  .verdict {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
-    margin-top: 6px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: var(--band);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 0.9375rem;
-    line-height: 1.45;
-  }
-  .dot {
-    flex: none;
-    display: inline-block;
-    width: 9px; height: 9px;
-    border-radius: 50%;
-    background: var(--warn);
-    transform: translateY(-1px);
-  }
-  .dot.ok { background: var(--ok); }
-  .dot.bad { background: var(--bad); }
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 16px;
-    font-size: 0.875rem;
-    color: var(--text-2);
-    list-style: none;
-    margin: 2px 0 0;
-    padding: 0;
-  }
-  .legend li { display: inline-flex; align-items: center; gap: 7px; }
-  .legend .dot { transform: none; }
+  .panel { margin-left: auto; width: min(100%, 470px); background: #1f1f22; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; padding: 16px; font: 13px/1.35 var(--sans); box-shadow: 0 24px 50px -18px rgba(0, 0, 0, 0.75); }
+  .verdict { display: flex; gap: 10px; align-items: flex-start; min-height: 62px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex: none; background: var(--red); transition: background 0.4s; }
+  .verdict h3 { font: 600 17px/1.25 var(--sans); letter-spacing: -0.01em; }
+  .verdict p { color: var(--muted); margin-top: 3px; }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 12px; }
+  .tile { background: rgba(255, 255, 255, 0.055); border-radius: 10px; padding: 9px 10px; min-height: 72px; display: flex; flex-direction: column; }
+  .tile span { color: var(--muted); font-size: 11px; }
+  .tile b { font: 600 18px/1.25 var(--round); font-variant-numeric: tabular-nums; transition: color 0.4s; white-space: nowrap; }
+  .tile small { color: var(--muted); font-size: 10.5px; white-space: nowrap; }
+  .tile svg { margin-top: auto; width: 100%; height: 14px; overflow: visible; }
+  .tile polyline { fill: none; stroke: #4c8dff; stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .t-red { color: var(--red); } .t-orange { color: var(--orange); }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .panel .rows { min-height: 168px; } /* four rows: the panel keeps its height when one is removed */
+  .row { display: grid; grid-template-columns: 26px minmax(0, 1fr) 46px 50px; gap: 8px; align-items: center; min-height: 42px; padding: 5px 6px; border-radius: 7px; transition: opacity 0.3s, transform 0.3s, background 0.15s; }
+  .row:hover, .row:focus-within { background: rgba(255, 255, 255, 0.06); }
+  .row.leaving { opacity: 0; transform: translateX(14px); }
+  .ico { width: 24px; height: 24px; border-radius: 6.5px; display: grid; place-items: center; font: 700 12px var(--round); color: #fff; }
+  .ico.task, .ico.sys { background: none; border: 1.4px solid rgba(244, 233, 214, 0.45); color: rgba(244, 233, 214, 0.75); font: 600 9px var(--mono); }
+  .ico.sys { border: 0; }
+  .ico.sys svg { width: 20px; height: 20px; }
+  .row strong { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row em { display: block; font-style: normal; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .act { justify-self: end; font: 500 11.5px var(--sans); color: var(--text); background: rgba(255, 255, 255, 0.14); border: 0; border-radius: 6px; padding: 3px 9px; cursor: pointer; opacity: 0.5; transition: opacity 0.15s, background 0.15s; }
+  .row:hover .act, .row:focus-within .act, .act.pulse { opacity: 1; }
+  .act:hover { background: rgba(255, 255, 255, 0.26); }
+  .act.pulse { background: var(--accent); color: #1b0d04; font-weight: 600; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 122, 47, 0.22); } }
+  @media (hover: none) { .act { opacity: 1; } }
 
-  .tiles {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    list-style: none;
-    margin: 6px 0 0;
-    padding: 0;
-  }
-  .tiles li {
-    padding: 10px 12px;
-    border-radius: 11px;
-    background: var(--band);
-    border: 1px solid var(--border);
-    font-size: 0.875rem;
-    line-height: 1.35;
-    color: var(--text-2);
-  }
-  .tiles strong {
-    display: block;
-    color: var(--text);
-    font-size: 0.9375rem;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
+  /* What it does */
+  .list { list-style: none; margin: clamp(28px, 5vw, 52px) 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .list li { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(0, 400px); gap: 16px 28px; padding: clamp(22px, 3.2vw, 32px) 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .list .n { font: 600 14px var(--mono); color: var(--accent); align-self: start; padding-top: 8px; }
+  .list h3 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); font-weight: 650; }
+  .list p { color: var(--muted); margin-top: 8px; max-width: 30em; }
+  .viz { background: #1f1f22; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; padding: 14px; font: 13px/1.35 var(--sans); box-shadow: 0 18px 36px -22px rgba(0, 0, 0, 0.9); }
+  .viz .v-line { display: flex; gap: 10px; align-items: flex-start; }
+  .viz .vh { display: block; font: 600 15px/1.3 var(--sans); }
+  .viz .vm { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .viz .row { padding: 2px 0; grid-template-columns: 26px minmax(0, 1fr) 46px 62px; min-height: 0; }
+  .viz .row:hover { background: none; }
+  .viz mark { background: none; color: var(--orange); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font-size: 11px; color: var(--faint); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+  .arrow { color: var(--accent); text-align: center; font-size: 15px; line-height: 1; margin: 8px 0 6px; }
+  .dialog { max-width: 300px; margin-inline: auto; text-align: center; padding: 18px; }
+  .dialog .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .dialog .btns span { border-radius: 7px; padding: 5px 8px; background: rgba(255, 255, 255, 0.12); font-weight: 500; }
+  .dialog .btns .primary { background: #3b82f6; color: #fff; }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    list-style: none;
-    margin: 4px 0 0;
-    padding: 0;
-  }
-  .chips li {
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: var(--band);
-    border: 1px solid var(--border);
-    font-size: 0.8125rem;
-    color: var(--text);
-  }
-
-  /* Privacy */
-  .privacy {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: clamp(32px, 6vw, 72px);
-    align-items: start;
-  }
-  .checks {
-    list-style: none;
-    margin: 32px 0 0;
-    padding: 0;
-    display: grid;
-    gap: 18px;
-  }
-  .checks li {
-    display: grid;
-    grid-template-columns: 26px 1fr;
-    gap: 12px;
-    align-items: start;
-    color: var(--text-2);
-  }
-  .checks strong { color: var(--text); font-weight: 600; }
-  .checks svg {
-    width: 22px; height: 22px;
-    margin-top: 2px;
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .light-card {
-    padding: 28px 26px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-  .light-card h3 {
-    font-size: 1.25rem;
-    letter-spacing: -0.012em;
-    font-weight: 650;
-  }
-  .light-card > p { margin-top: 8px; color: var(--text-2); font-size: 1rem; }
-  .rates { margin: 22px 0 0; display: grid; gap: 0; }
-  .rates div {
-    display: grid;
-    grid-template-columns: 4.25rem 1fr;
-    gap: 14px;
-    align-items: baseline;
-    padding-block: 14px;
-    border-top: 1px solid var(--border);
-  }
-  .rates dt {
-    font-size: 1.625rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-  }
-  .rates dd { margin: 0; color: var(--text-2); font-size: 0.9375rem; line-height: 1.4; }
+  /* The real thing */
+  .real { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: clamp(28px, 6vw, 80px); align-items: center; }
+  .shot { margin: 0; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--line-strong); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9); }
+  .shot figcaption { color: var(--faint); font-size: 13.5px; text-align: center; margin-top: 12px; }
+  .facts { display: grid; gap: 12px; margin-top: 28px; }
+  .fact { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .fact h3 { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.01em; }
+  .fact p { color: var(--muted); font-size: 15px; margin-top: 6px; }
 
   /* Install */
-  .commands {
-    display: grid;
-    gap: 16px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .command-row {
-    display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr);
-    gap: 8px 24px;
-    align-items: center;
-    padding: 20px 22px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-  }
-  .command-row h3 { font-size: 1.125rem; font-weight: 650; letter-spacing: -0.01em; }
-  .command-row .hint { margin-top: 2px; font-size: 0.9375rem; color: var(--text-2); }
-  .command-row .cmd { max-width: none; }
+  .install { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: clamp(26px, 5vw, 56px); text-align: center; }
+  .install .cmd { margin: 28px auto 0; background: var(--bg); max-width: 580px; }
+  .install .lead { margin-inline: auto; }
+  .more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 40px; text-align: left; border-top: 1px solid var(--line); padding-top: 30px; }
+  .more h3 { font-size: 1rem; font-weight: 650; letter-spacing: -0.01em; }
+  .more p { color: var(--muted); font-size: 14.5px; margin-top: 6px; }
+  .more code { font: 12.5px/1.5 var(--mono); color: var(--cream); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; display: block; margin: 8px 0; overflow-wrap: anywhere; }
 
-  .notes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-    gap: 20px;
-    margin-top: 32px;
-  }
-  .note {
-    padding: 22px 22px 24px;
-    border-radius: var(--radius);
-    background: var(--band);
-    border: 1px solid var(--border);
-  }
-  .note h3 { font-size: 1.0625rem; font-weight: 650; margin-bottom: 8px; }
-  .note p { color: var(--text-2); font-size: 1rem; }
-  .note p + p { margin-top: 10px; }
-  .note a { font-weight: 600; }
-  kbd, .path {
-    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.875em;
-  }
+  footer { border-top: 1px solid var(--line); padding: 28px 0 44px; color: var(--muted); font-size: 14.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 
-  /* Footer */
-  .site-footer {
-    border-top: 1px solid var(--border);
-    padding-block: 32px 40px;
-    color: var(--text-2);
-    font-size: 0.9375rem;
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr); text-align: center; }
+    .hero::before { inset: 20% 0 auto 0; }
+    .face { margin-inline: auto; }
+    .hero .sub, .hero .cmd { margin-inline: auto; }
+    .panel { margin-inline: auto; }
+    .list li { grid-template-columns: 40px minmax(0, 1fr); }
+    .list .viz { grid-column: 2; }
+    .real { grid-template-columns: minmax(0, 1fr); }
+    .shot { max-width: 400px; margin-inline: auto; }
+    .more { grid-template-columns: minmax(0, 1fr); }
   }
-  .foot {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px 24px;
-  }
-  .foot .brand { font-size: 1rem; }
-  .foot .brand img { width: 22px; height: 22px; border-radius: 6px; }
-  .foot ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 24px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .foot ul a { color: var(--text-2); text-decoration: none; }
-  .foot ul a:hover { color: var(--text); text-decoration: underline; }
-
-  /* Responsive */
-  @media (max-width: 880px) {
-    .hero-grid { grid-template-columns: minmax(0, 1fr); }
-    .hero-shot picture { max-width: 420px; }
-    .privacy { grid-template-columns: minmax(0, 1fr); }
-  }
-  @media (max-width: 640px) {
+  @media (max-width: 520px) {
     body { font-size: 16px; }
-    .command-row { grid-template-columns: minmax(0, 1fr); padding: 18px; }
-    .cmd { padding: 8px 8px 8px 14px; gap: 10px; }
-    .cmd code { font-size: 0.875rem; white-space: pre; }
-    .copy { min-width: 70px; }
+    .nav nav a.hide-s { display: none; }
+    .panel { padding: 12px; }
+    .list li { grid-template-columns: minmax(0, 1fr); }
+    .list .n { padding-top: 0; }
+    .list .viz { grid-column: 1; }
+    .cmd code { font-size: 13px; }
   }
-  @media (max-width: 400px) {
-    .brand span { font-size: 1rem; }
-    .nav ul a { font-size: 0.875rem; }
-    .tiles { grid-template-columns: minmax(0, 1fr); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .face .pupils, .face .bead, .act.pulse { animation: none; }
+    * { transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="wrap nav">
-    <a class="brand" href="/" aria-label="MacSweat home">
-      <img src="assets/icon.png" width="28" height="28" alt="">
-      <span>MacSweat</span>
-    </a>
-    <nav aria-label="Main">
-      <ul>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#install">Install</a></li>
-        <li><a href="https://github.com/Parrtth/macsweat">GitHub</a></li>
-      </ul>
-    </nav>
-  </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2e2e31"/><stop offset="0.6" stop-color="#1c1c1e"/><stop offset="1" stop-color="#151517"/></linearGradient>
+    <linearGradient id="g-bead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset="1" stop-color="#ff7a2f"/></linearGradient>
+    <symbol id="logo" viewBox="0 0 1024 1024">
+      <rect x="100" y="100" width="824" height="824" rx="190" fill="url(#g-body)" stroke="rgba(255,255,255,0.14)" stroke-width="8"/>
+      <ellipse cx="336" cy="562" rx="78" ry="94" fill="#f4e4c8"/><ellipse cx="536" cy="562" rx="78" ry="94" fill="#f4e4c8"/>
+      <circle cx="360" cy="532" r="40" fill="#1b1b1d"/><circle cx="560" cy="532" r="40" fill="#1b1b1d"/>
+      <path d="M362 738c18-32 56-32 74 0s56 32 74 0" fill="none" stroke="#f4e4c8" stroke-width="30" stroke-linecap="round"/>
+      <path transform="rotate(7 712 384)" d="M712 252c18 48 58 88 58 132a58 58 0 1 1-116 0c0-44 40-84 58-132z" fill="#ff7a2f"/>
+    </symbol>
+    <symbol id="glyph" viewBox="0 0 22 18">
+      <path fill="currentColor" fill-rule="evenodd" d="M5.2 6.6c1.9 0 3.4 1.8 3.4 4s-1.5 4-3.4 4-3.4-1.8-3.4-4 1.500-4 3.400-4zm1 1.600a1.800 1.800 0 1 0 0 3.600 1.800 1.800 0 0 0 0-3.600zM13.400 6.600c1.900 0 3.400 1.800 3.400 4s-1.500 4-3.400 4-3.400-1.800-3.400-4 1.500-4 3.400-4zm1 1.600a1.800 1.800 0 1 0 0 3.600 1.800 1.800 0 0 0 0-3.600z"/>
+      <path fill="currentColor" d="M18.900 0.800c0.700 1.800 2.300 3.200 2.300 4.900a2.300 2.300 0 0 1-4.600 0c0-1.700 1.600-3.100 2.300-4.900z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="wrap nav">
+  <a class="brand" href="#top" aria-label="MacSweat home">
+    <svg aria-hidden="true"><use href="#logo"/></svg>MacSweat
+  </a>
+  <nav aria-label="Primary">
+    <a class="hide-s" href="#what">What it does</a>
+    <a href="#install">Install</a>
+    <a href="https://github.com/Parrtth/macsweat">GitHub</a>
+  </nav>
 </header>
 
 <main id="main">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Free menu bar app for macOS</p>
-        <h1 id="hero-title">Why is your Mac sweating?</h1>
-        <p class="lede">MacSweat lives in your menu bar and shows, in one click, what’s heating up or slowing down your Mac — so you can close it yourself.</p>
-
-        <p class="install-label" id="hero-install-label">Install with one line in Terminal</p>
-        <div class="cmd" role="group" aria-labelledby="hero-install-label">
-          <code id="cmd-hero">curl -fsSL https://macsweat.parthh.dev/install | sh</code>
-          <button type="button" class="copy" data-copy="cmd-hero" aria-label="Copy install command">Copy</button>
+  <div class="wrap hero" id="top">
+    <div class="pitch">
+      <svg class="face" viewBox="0 0 1024 1024" role="img" aria-label="The MacSweat icon: a small nervous face with a bead of sweat">
+      <rect x="100" y="100" width="824" height="824" rx="190" fill="url(#g-body)" stroke="rgba(255,255,255,0.12)" stroke-width="5"/>
+      <ellipse cx="336" cy="562" rx="78" ry="94" fill="#f4e4c8"/><ellipse cx="536" cy="562" rx="78" ry="94" fill="#f4e4c8"/>
+      <g class="pupils">
+        <circle cx="360" cy="532" r="40" fill="#1b1b1d"/><circle cx="560" cy="532" r="40" fill="#1b1b1d"/>
+        <circle cx="384" cy="508" r="10" fill="#fff8ea"/><circle cx="584" cy="508" r="10" fill="#fff8ea"/>
+      </g>
+      <path class="wobble" d="M362 738c18-32 56-32 74 0s56 32 74 0" fill="none" stroke="#f4e4c8" stroke-width="30" stroke-linecap="round"/>
+      <path class="smile" d="M366 722q70 66 140 0" fill="none" stroke="#f4e4c8" stroke-width="30" stroke-linecap="round"/>
+      <g class="bead-wrap"><path class="bead" transform="rotate(7 712 384)" d="M712 252c18 48 58 88 58 132a58 58 0 1 1-116 0c0-44 40-84 58-132z" fill="url(#g-bead)"/></g>
+    </svg>
+      <h1>Why is your Mac <em>sweating?</em></h1>
+      <p class="sub">MacSweat sits in your menu bar and names what’s heating up or slowing down your Mac, so you can close it yourself.</p>
+      <div class="cmd" role="group" aria-label="Install command">
+      <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
+      <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
+    </div>
+      <p class="meta">Free and open source · macOS 13 or later · <a href="/install">Read the script</a></p>
+    </div>
+    <div class="demo" id="try">
+      <p class="hint"><b>Try it.</b> This Mac is sweating. Find the culprit and press <strong>Stop</strong>.</p>
+      <div class="mac">
+        <div class="menubar" aria-hidden="true">
+          <div class="right"><span class="status hot" id="status"><svg><use href="#glyph"/></svg><span id="status-pct">78%</span></span><span>9:41</span></div>
         </div>
-        <p class="meta"><span class="nw">macOS 13+</span> · <span class="nw">Apple silicon &amp; Intel</span> · <span class="nw">Free &amp; open source</span></p>
-        <p class="meta-links"><a href="#install">How the installer works</a> · <a href="/install">Read the script</a></p>
+        <div class="panel" role="group" aria-label="MacSweat panel demo">
+          <div class="verdict" aria-live="polite">
+            <span class="dot" id="dot"></span>
+            <div><h3 id="headline"></h3><p id="detail"></p></div>
+          </div>
+          <div class="tiles">
+            <div class="tile"><span>CPU</span><b id="t-cpu"></b><small>of 10 cores</small><svg viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><polyline id="spark"/></svg></div>
+            <div class="tile"><span>Heat</span><b id="t-heat"></b></div>
+          </div>
+          <ul class="rows" id="rows"></ul>
+        </div>
       </div>
-
-      <div class="hero-shot">
-        <picture>
-          <source srcset="assets/screenshot-dark.png" media="(prefers-color-scheme: dark)">
-          <img src="assets/screenshot-light.png" width="500" height="700"
-               alt="The MacSweat panel open from the menu bar: a one-line verdict with a status dot, tiles for CPU, memory, memory pressure and heat, background tasks grouped by project, and a list of apps and processes.">
-        </picture>
+      <div class="result" id="result" hidden>
+        <p>Phew. That’s all there is to it.</p>
+        <small>The real app asks before it closes anything. <button class="linkbtn" type="button" id="reset">Make it sweat again</button></small>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section class="section" id="features" aria-labelledby="features-title">
+  <section id="what" aria-labelledby="what-h">
     <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">What it shows</p>
-        <h2 id="features-title">The answer first, then the details.</h2>
-        <p class="sub">Click the drop in your menu bar. MacSweat tells you what’s going on in a sentence, then shows you exactly what’s responsible.</p>
-      </div>
-
-      <ul class="cards">
-        <li class="card">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3.5c3.1 3.7 5.5 6.9 5.5 10a5.5 5.5 0 0 1-11 0c0-3.1 2.4-6.3 5.5-10z"/></svg>
-          </span>
-          <h3>Lives in your menu bar</h3>
-          <p>A small drop icon next to your live CPU&nbsp;%. One click opens the panel. Turn on Open at Login and it’s there whenever your Mac is.</p>
+      <p class="eyebrow">What it does</p>
+      <h2 id="what-h">One click. One answer.</h2>
+      <ol class="list">
+        <li><span class="n">01</span>
+          <div><h3>Names the culprit</h3><p>One sentence says what’s using the most CPU and memory. A dot beside it turns green, orange or red.</p></div>
+          <div class="viz" aria-hidden="true"><div class="v-line"><span class="dot"></span><div><b class="vh">Your Mac is working hard</b><span class="vm">Next.js dev server is using the most CPU (386%).</span></div></div></div>
         </li>
-
-        <li class="card">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="6.5" cy="12" r="2.5"/><path d="M12 9h8M12 15h5"/></svg>
-          </span>
-          <h3>A verdict in one line</h3>
-          <p>A status dot and a plain sentence that names what’s using the most:</p>
-          <p class="verdict"><span class="dot" aria-hidden="true"></span><span>Your Mac is working hard — Next.js dev server is using the most CPU (386%).</span></p>
-          <ul class="legend" aria-label="Status colors">
-            <li><span class="dot ok" aria-hidden="true"></span>Green</li>
-            <li><span class="dot" aria-hidden="true"></span>Orange</li>
-            <li><span class="dot bad" aria-hidden="true"></span>Red</li>
-          </ul>
+        <li><span class="n">02</span>
+          <div><h3>Cuts through helper soup</h3><p>Chrome’s 25 helpers count as Chrome. macOS services get plain names like “Spotlight indexing” and “iCloud sync”.</p></div>
+          <div class="viz" aria-hidden="true">
+            <div class="chips"><span>Helper</span><span>Helper (GPU)</span><span>Helper (Renderer)</span><span>Helper (Renderer)</span><span>Helper (Plugin)</span><span>+22 more</span></div>
+            <div class="arrow">↓</div>
+            <div class="row"><span class="ico" style="background:#3b7ded">G</span><div><strong>Google Chrome</strong></div><span class="num">64%</span><span class="num">3.4 GB</span></div>
+          </div>
         </li>
-
-        <li class="card">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M3.5 16l4.5-5 4 3.5 8-8.5"/><path d="M3.5 20.5h17"/></svg>
-          </span>
-          <h3>CPU, memory and heat</h3>
-          <ul class="tiles">
-            <li><strong>CPU</strong>With a few-minute history line</li>
-            <li><strong>Memory used</strong>The same figure as Activity Monitor</li>
-            <li><strong>Memory pressure</strong>Plus swap</li>
-            <li><strong>Heat</strong>The macOS thermal state</li>
-          </ul>
-          <p>When Heat says Hot, macOS slows the processor down to cool off — that’s the moment to look.</p>
+        <li><span class="n">03</span>
+          <div><h3>Finds what you forgot</h3><p>Dev servers and scripts left running, grouped by project. Each shows its project folder and how long it’s been up.</p></div>
+          <div class="viz" aria-hidden="true"><div class="row"><span class="ico task">&gt;_</span><div><strong>Python</strong><em>price-scraper · <mark>up 2d 4h</mark></em></div><span class="num">0.4%</span><span class="num">212 MB</span></div></div>
         </li>
-
-        <li class="card">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M7.5 10l2.5 2-2.5 2M12.5 14.5H16"/></svg>
-          </span>
-          <h3>Background tasks you forgot</h3>
-          <p>Dev servers and scripts — Node.js, Next.js, Vite, Python, PostgreSQL and more — grouped by project folder. See how long each has been running and which app started it, or whether it’s been left <em>running on its own</em>.</p>
+        <li><span class="n">04</span>
+          <div><h3>You decide what closes</h3><p>Quit an app or stop a task right from the list. MacSweat asks first, and it never closes anything by itself.</p></div>
+          <div class="viz dialog" aria-hidden="true"><b class="vh">Quit Mail?</b><span class="vm">Mail will quit normally, just like choosing Quit from its menu.</span><div class="btns"><span>Cancel</span><span class="primary">Quit Mail</span></div></div>
         </li>
-
-        <li class="card">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3.5l8.5 4.5-8.5 4.5L3.5 8z"/><path d="M3.5 12.5l8.5 4.5 8.5-4.5"/><path d="M3.5 16.5l8.5 4.5 8.5-4.5"/></svg>
-          </span>
-          <h3>Apps, not helper soup</h3>
-          <p>Sorted by CPU or memory. Chrome’s 25 helpers count as Chrome, WebKit pages count under Safari, and macOS services get plain names:</p>
-          <ul class="chips" aria-label="Example service names">
-            <li>Spotlight indexing</li>
-            <li>iCloud sync</li>
-          </ul>
-          <p>Browsers show as one row, with a tip for finding heavy tabs in Chrome’s Task Manager.</p>
-        </li>
-
-        <li class="card">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3.5l7 2.8v5.2c0 4.3-2.9 7.6-7 9-4.1-1.4-7-4.7-7-9V6.3z"/><path d="M9 12.2l2.1 2.1L15.2 10"/></svg>
-          </span>
-          <h3>You decide what closes</h3>
-          <p>Hover a row for <strong>Quit</strong> or <strong>Stop</strong>. Quit closes an app normally, just like choosing Quit, so it may ask you to save. Stop sends a dev task the same signal as Control-C.</p>
-          <p>Both ask first. Nothing is ever closed automatically.</p>
-        </li>
-      </ul>
+      </ol>
     </div>
   </section>
 
-  <section class="section band" id="privacy" aria-labelledby="privacy-title">
-    <div class="wrap privacy">
+  <section id="real" aria-labelledby="real-h">
+    <div class="wrap real">
+      <figure class="shot">
+        <img src="assets/screenshot-dark.png" width="500" height="700" loading="lazy" alt="The real MacSweat panel: a verdict line, tiles for CPU, memory and heat, a list of background tasks, and apps sorted by CPU.">
+        <figcaption>The real panel, captured from the app with sample data.</figcaption>
+      </figure>
       <div>
-        <p class="eyebrow">Privacy</p>
-        <h2 id="privacy-title">Private by design</h2>
-        <p class="sub">MacSweat reads everything it shows right on your Mac.</p>
-        <ul class="checks">
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-            <span><strong>Everything is read on your Mac.</strong> CPU, memory, heat and the process list never need a server.</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-            <span><strong>No account, no analytics, no tracking.</strong> Open it and it works.</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-            <span><strong>One optional network request.</strong> The “Check for Updates…” menu item asks GitHub for the latest version. That’s the only request MacSweat makes.</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="light-card">
-        <h3>Light on resources</h3>
-        <p>A monitor shouldn’t be the thing slowing you down. MacSweat checks less often when you’re not looking.</p>
-        <dl class="rates">
-          <div><dt>3&nbsp;s</dt><dd>Refresh rate while the panel is open</dd></div>
-          <div><dt>5&nbsp;s</dt><dd>Overall numbers, while the panel is closed</dd></div>
-          <div><dt>30&nbsp;s</dt><dd>Process list, while the panel is closed</dd></div>
-        </dl>
+        <p class="eyebrow">The real thing</p>
+        <h2 id="real-h">Small, native, and out of your way.</h2>
+        <div class="facts">
+          <div class="fact"><h3>Private</h3><p>Everything is read on your Mac. No account, no analytics, no tracking. The only network request is the optional “Check for Updates…” menu item.</p></div>
+          <div class="fact"><h3>Light</h3><p>It refreshes every 3 seconds while open. While closed, it checks the overall numbers every 5 seconds and the process list every 30.</p></div>
+          <div class="fact"><h3>Open</h3><p>MIT licensed, written in Swift. <a href="https://github.com/Parrtth/macsweat">Read the code on GitHub</a>.</p></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="install" aria-labelledby="install-title">
+  <section id="install" aria-labelledby="install-h">
     <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Get started</p>
-        <h2 id="install-title">Install, update, uninstall</h2>
-        <p class="sub">Open Terminal, paste a command and press Return. The installer downloads the latest release from GitHub, checks its SHA-256 checksum, installs MacSweat to <span class="path">/Applications</span> and opens it.</p>
-      </div>
-
-      <ul class="commands">
-        <li class="command-row">
-          <div>
-            <h3 id="install-label">Install</h3>
-            <p class="hint">Downloads, verifies and opens MacSweat.</p>
-          </div>
-          <div class="cmd" role="group" aria-labelledby="install-label">
-            <code id="cmd-install">curl -fsSL https://macsweat.parthh.dev/install | sh</code>
-            <button type="button" class="copy" data-copy="cmd-install" aria-label="Copy install command">Copy</button>
-          </div>
-        </li>
-        <li class="command-row">
-          <div>
-            <h3 id="update-label">Update</h3>
-            <p class="hint">Run the same command again.</p>
-          </div>
-          <div class="cmd" role="group" aria-labelledby="update-label">
-            <code id="cmd-update">curl -fsSL https://macsweat.parthh.dev/install | sh</code>
-            <button type="button" class="copy" data-copy="cmd-update" aria-label="Copy update command">Copy</button>
-          </div>
-        </li>
-        <li class="command-row">
-          <div>
-            <h3 id="uninstall-label">Uninstall</h3>
-            <p class="hint">Removes MacSweat.</p>
-          </div>
-          <div class="cmd" role="group" aria-labelledby="uninstall-label">
-            <code id="cmd-uninstall">curl -fsSL https://macsweat.parthh.dev/uninstall | sh</code>
-            <button type="button" class="copy" data-copy="cmd-uninstall" aria-label="Copy uninstall command">Copy</button>
-          </div>
-        </li>
-      </ul>
-
-      <div class="notes">
-        <div class="note">
-          <h3>Why a Terminal command?</h3>
-          <p>MacSweat is free and isn’t notarized by Apple — that costs $99 a year — so macOS would block a download from your browser. The install script is short and readable.</p>
-          <p><a href="/install">Read the script</a></p>
+      <div class="install">
+        <p class="eyebrow">Install</p>
+        <h2 id="install-h">One line in Terminal.</h2>
+        <p class="lead">It downloads the latest release from GitHub, checks its SHA-256, installs MacSweat to Applications and opens it.</p>
+        <div class="cmd" role="group" aria-label="Install command">
+          <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
+          <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
         </div>
-        <div class="note">
-          <h3>Don’t see the icon?</h3>
-          <p>On macOS 26 and later, allow MacSweat in System Settings&nbsp;▸ Menu&nbsp;Bar.</p>
-        </div>
-        <div class="note">
-          <h3>Requirements</h3>
-          <p>macOS 13 Ventura or later, on Apple silicon or Intel. Free, under the MIT license.</p>
-          <p><a href="https://github.com/Parrtth/macsweat/releases">Releases on GitHub</a></p>
+        <div class="more">
+          <div><h3>Update or uninstall</h3><p>Run the install command again to update. To remove MacSweat:</p><code>curl -fsSL https://macsweat.parthh.dev/uninstall | sh</code><button class="linkbtn" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/uninstall | sh" data-label="Copy uninstall command">Copy uninstall command</button></div>
+          <div><h3>Why a Terminal command?</h3><p>MacSweat is free and isn’t notarized by Apple, which costs $99 a year, so macOS would block a browser download. The script is short. <a href="/install">Read it first</a>.</p></div>
+          <div><h3>Don’t see the icon?</h3><p>On macOS 26 and later, allow MacSweat in System Settings ▸ Menu Bar. It needs macOS 13 Ventura or later, on Apple silicon or Intel.</p></div>
         </div>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap foot">
-    <a class="brand" href="/" aria-label="MacSweat home">
-      <img src="assets/icon.png" width="22" height="22" alt="">
-      <span>MacSweat</span>
-    </a>
-    <ul>
-      <li><a href="https://github.com/Parrtth/macsweat">GitHub</a></li>
-      <li><a href="https://github.com/Parrtth/macsweat/blob/main/LICENSE">MIT License</a></li>
-      <li><a href="https://parthh.dev">Made by Parth</a></li>
-    </ul>
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>MacSweat</a>
+    <nav aria-label="Footer">
+      <a href="https://github.com/Parrtth/macsweat">GitHub</a>
+      <a href="https://github.com/Parrtth/macsweat/releases">Releases</a>
+      <a href="https://github.com/Parrtth/macsweat/blob/main/LICENSE">MIT License</a>
+      <a href="https://parthh.dev">Made by Parth</a>
+    </nav>
   </div>
 </footer>
-
-<p class="sr-only" id="copy-status" aria-live="polite"></p>
+<div class="sr" aria-live="polite" id="announce"></div>
 
 <script>
 (function () {
-  var status = document.getElementById('copy-status');
-  var announceTimer;
+  var $ = function (id) { return document.getElementById(id); };
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function announce(message) {
-    status.textContent = '';
-    clearTimeout(announceTimer);
-    announceTimer = setTimeout(function () { status.textContent = message; }, 60);
-  }
-
-  function legacyCopy(text) {
-    var area = document.createElement('textarea');
-    area.value = text;
-    area.setAttribute('readonly', '');
-    area.style.position = 'fixed';
-    area.style.top = '-1000px';
-    area.style.opacity = '0';
-    document.body.appendChild(area);
-    area.select();
-    var ok = false;
-    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-    document.body.removeChild(area);
-    return ok;
-  }
-
-  function selectContents(el) {
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    var selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
+  // Copy buttons
   document.addEventListener('click', function (event) {
-    var button = event.target.closest && event.target.closest('[data-copy]');
+    var button = event.target.closest('[data-copy]');
     if (!button) return;
-    var source = document.getElementById(button.getAttribute('data-copy'));
-    if (!source) return;
-    var text = source.textContent.trim();
-
-    function finish(ok) {
-      if (ok) {
-        button.textContent = 'Copied';
-        button.classList.add('is-copied');
-        announce('Copied');
-        clearTimeout(button._reset);
-        button._reset = setTimeout(function () {
-          button.textContent = 'Copy';
-          button.classList.remove('is-copied');
-        }, 2000);
-      } else {
-        selectContents(source);
-        announce('Couldn’t copy automatically. The command is selected; press Command-C to copy it.');
-      }
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(
-        function () { finish(true); },
-        function () { finish(legacyCopy(text)); }
-      );
-    } else {
-      finish(legacyCopy(text));
-    }
+    var text = button.getAttribute('data-copy');
+    var done = function () {
+      var label = button.getAttribute('data-label') || 'Copy';
+      button.textContent = 'Copied'; button.classList.add('done'); $('announce').textContent = 'Copied to clipboard';
+      setTimeout(function () { button.textContent = label; button.classList.remove('done'); $('announce').textContent = ''; }, 1800);
+    };
+    var fallback = function () {
+      var range = document.createRange(); range.selectNodeContents(button.parentNode.querySelector('code'));
+      var selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
+      try { if (document.execCommand('copy')) { selection.removeAllRanges(); done(); return; } } catch (e) {}
+      $('announce').textContent = 'Press Command-C to copy';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
   });
+
+  // Demo panel
+  var START = [
+    { id: 'next', kind: 'task', name: 'Next.js dev server', sub: 'storefront · up 3h 12m', cpu: 386, act: 'Stop' },
+    { id: 'chrome', kind: 'app', name: 'Google Chrome', cpu: 64, act: 'Quit', color: '#3b7ded' },
+    { id: 'spot', kind: 'sys', name: 'Spotlight indexing', cpu: 48 },
+    { id: 'mail', kind: 'app', name: 'Mail', cpu: 12, act: 'Quit', color: '#2a9df4' }
+  ];
+  var GEAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="8.2" stroke-width="3" stroke-dasharray="3.22 3.22"/><circle cx="12" cy="12" r="6.4" stroke-width="1.5"/><circle cx="12" cy="12" r="2.6" stroke-width="1.5"/></svg>';
+  var rows, history = [], touched = false;
+
+  function cpuLabel(v) { return (v >= 9.95 ? Math.round(v) : v.toFixed(1)) + '%'; }
+  function total() {
+    var cpu = 0;
+    rows.forEach(function (r) { cpu += r.cpu; });
+    return Math.round(13 + cpu / 7.85);
+  }
+  function severity(cpu) { return cpu >= 75 ? 'red' : cpu >= 40 ? 'orange' : 'green'; }
+
+  function rowHTML(r, hot) {
+    var icon = r.kind === 'app'
+      ? '<span class="ico" style="background:' + r.color + '">' + r.name.charAt(0) + '</span>'
+      : '<span class="ico ' + r.kind + '">' + (r.kind === 'task' ? '&gt;_' : GEAR) + '</span>';
+    var action = r.act
+      ? '<button class="act' + (hot && !touched ? ' pulse' : '') + '" type="button" data-id="' + r.id + '" aria-label="' + r.act + ' ' + r.name + '">' + r.act + '</button>'
+      : '<span></span>';
+    return '<li class="row" data-row="' + r.id + '">' + icon + '<div><strong>' + r.name + '</strong>' + (r.sub ? '<em>' + r.sub + '</em>' : '') + '</div>' +
+      '<span class="num' + (r.cpu >= 300 ? ' t-red' : r.cpu >= 100 ? ' t-orange' : '') + '">' + cpuLabel(r.cpu) + '</span>' + action + '</li>';
+  }
+
+  function render() {
+    var cpu = total(), level = severity(cpu);
+    var sorted = rows.slice().sort(function (a, b) { return b.cpu - a.cpu; });
+    var top = sorted[0];
+    $('headline').textContent = cpu >= 75 ? 'Your Mac is working hard' : cpu >= 40 ? 'Your Mac is fairly busy' : 'Your Mac is taking it easy';
+    $('detail').textContent = top && top.cpu >= 20 ? top.name + ' is using the most CPU (' + cpuLabel(top.cpu) + ').' : 'Nothing is using much CPU.';
+    $('dot').style.background = 'var(--' + level + ')';
+    $('t-cpu').textContent = cpu + '%';
+    $('t-cpu').className = cpu >= 75 ? 't-red' : cpu >= 40 ? 't-orange' : '';
+    $('t-heat').textContent = cpu >= 75 ? 'Warm' : 'Normal';
+    $('t-heat').className = cpu >= 75 ? 't-orange' : '';
+    $('status-pct').textContent = cpu + '%';
+    $('status').classList.toggle('hot', level === 'red');
+    var hotID = level === 'red' && top ? top.id : null;
+    $('rows').innerHTML = sorted.map(function (r) { return rowHTML(r, r.id === hotID); }).join('');
+    var calm = level === 'green';
+    document.body.classList.toggle('calm', calm);
+    $('result').hidden = !(calm && touched);
+  }
+
+  function spark(value) {
+    history.push(value); if (history.length > 28) history.shift();
+    $('spark').setAttribute('points', history.map(function (v, i) { return (i * 100 / 27).toFixed(1) + ',' + (13 - v / 100 * 12).toFixed(1); }).join(' '));
+  }
+  function tick() {
+    var t = total(), jitter = reduced ? 0 : Math.round((Math.random() - 0.5) * 6);
+    var shown = Math.max(3, Math.min(99, t + jitter));
+    spark(shown);
+    if (!reduced) { $('t-cpu').textContent = shown + '%'; $('status-pct').textContent = shown + '%'; }
+  }
+  function reset() {
+    rows = START.map(function (r) { return Object.assign({}, r); });
+    touched = false; history = [];
+    [12, 14, 11, 13, 18, 22, 19, 25, 31, 28, 36, 44, 41, 52, 58, 55, 63, 69, 66, 72, 75, 71, 78, 80, 76, 78, 79, 78].forEach(spark);
+    render();
+  }
+
+  document.querySelector('.panel').addEventListener('click', function (event) {
+    var button = event.target.closest('.act');
+    if (!button) return;
+    var id = button.getAttribute('data-id'), row = document.querySelector('[data-row="' + id + '"]');
+    touched = true;
+    row.classList.add('leaving');
+    setTimeout(function () {
+      rows = rows.filter(function (r) { return r.id !== id; });
+      render();
+      for (var i = 0; i < 6; i++) spark(total());
+    }, reduced ? 0 : 280);
+  });
+  $('reset').addEventListener('click', reset);
+
+  reset();
+  setInterval(tick, 1600);
 })();
 </script>
 </body>

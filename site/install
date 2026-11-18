@@ -49,7 +49,7 @@ main() {
   say "Installed $dest/MacSweat.app"
   open "$dest/MacSweat.app"
   say ""
-  say "MacSweat is running — look for the drop in your menu bar."
+  say "MacSweat is running — look for the little sweating face in your menu bar."
   say "If you don't see it on macOS 26 or later, allow MacSweat in System Settings ▸ Menu Bar."
   say "Update: run this command again.  Uninstall: curl -fsSL https://macsweat.parthh.dev/uninstall | sh"
 }
