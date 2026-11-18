@@ -1,69 +1,104 @@
-<p align="center"><img src="site/assets/icon.png" width="128" height="128" alt="MacSweat icon: a nervous face with a bead of sweat"></p>
+<p align="center"><img src="site/assets/icon.png" width="112" height="112" alt="MacSweat icon: a nervous face with a bead of sweat"></p>
 
 <h1 align="center">MacSweat</h1>
-<p align="center"><b>Why is your Mac sweating?</b><br>A free menu bar app that shows, in one click, what's heating up or slowing down your Mac, so you can close it yourself.</p>
 
-<p align="center"><img src="site/assets/screenshot-light.png" width="500" alt="The MacSweat panel: a verdict line, CPU, memory and heat tiles, background dev tasks, and apps sorted by CPU"></p>
+<p align="center">
+  <b>Why is your Mac sweating?</b><br>
+  A free menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.
+</p>
+
+<p align="center">
+  <a href="https://macsweat.parthh.dev">Website</a> ·
+  <a href="https://github.com/Parrtth/macsweat/releases/latest">Latest release</a> ·
+  macOS 13 or later ·
+  <a href="LICENSE">MIT</a>
+</p>
+
+<p align="center">
+  <img src="site/assets/screenshot-dark.png#gh-dark-mode-only" width="380" alt="The MacSweat panel: a verdict line, tiles for CPU, memory and heat, background tasks, and apps sorted by CPU">
+  <img src="site/assets/screenshot-light.png#gh-light-mode-only" width="380" alt="The MacSweat panel: a verdict line, tiles for CPU, memory and heat, background tasks, and apps sorted by CPU">
+</p>
 
 ## Install
+
+Paste this into Terminal:
 
 ```sh
 curl -fsSL https://macsweat.parthh.dev/install | sh
 ```
 
-The script downloads the latest release from GitHub and checks its SHA-256. Then it installs MacSweat to `/Applications` and opens it. [Read the script](site/install) before running it. Run the same command again to update.
+It downloads the latest release from GitHub, checks its SHA-256, installs MacSweat to Applications and opens it. Then look for the small sweating face in your menu bar. You can [read the script](site/install) first.
+
+**Update:** run the install command again.
+
+**Uninstall:**
 
 ```sh
 curl -fsSL https://macsweat.parthh.dev/uninstall | sh
 ```
 
-**Requirements:** macOS 13 Ventura or later, Apple silicon or Intel. On macOS 26 and later, if the menu bar icon doesn't show up, allow MacSweat in System Settings ▸ Menu Bar.
+MacSweat needs macOS 13 Ventura or later, on Apple silicon or Intel.
 
-**Why a Terminal command?** MacSweat is free and isn't notarized by Apple (notarization needs a $99/year developer account). So macOS would block a zip downloaded in a browser. The install script avoids that, and it's short enough to read.
+## What it does
 
-## What it shows
+Click the icon and MacSweat shows you four things.
 
-- **A one-line verdict:** for example, "Your Mac is working hard. Next.js dev server is using the most CPU (386%) and memory (4.1 GB)." A dot next to it turns green, orange or red.
-- **CPU, memory and heat.** Memory matches Activity Monitor's "Memory Used", and the tile turns orange or red when macOS is struggling to fit everything in. Heat is macOS's thermal state; when it says *Hot*, macOS is slowing down to cool off.
-- **Background tasks:** dev servers and scripts (Node.js, Next.js, Vite, Python, PostgreSQL…), grouped by project. Each shows its project folder and how long it has been running.
-- **Apps & processes,** sorted by CPU or memory:
-  - Helpers are grouped with their app, so Chrome's 25 helpers count as Chrome and WebKit pages count under Safari.
-  - macOS services get plain names like "Spotlight indexing" or "iCloud sync".
-  - CPU uses Activity Monitor's scale: 100% = one full core.
-- **You decide what closes.** Hover a row for **Quit** (apps quit normally) or **Stop** (dev tasks get the same signal as Control-C). Both ask first. Nothing is closed automatically.
+1. **The culprit.** One sentence names what's using the most CPU and memory, such as "Next.js dev server is using the most CPU (386%)". A dot beside it turns green, orange or red, and three tiles show CPU, memory and heat.
+2. **Apps without the helper soup.** Chrome's 25 helpers count as Chrome. macOS services get plain names like "Spotlight indexing" and "iCloud sync". Sort the list by CPU or by memory.
+3. **What you forgot.** Dev servers and scripts left running (Node.js, Next.js, Vite, Python, PostgreSQL and others), grouped by project, with how long each has been up.
+4. **A way to close it.** Hover a row for **Quit** (apps) or **Stop** (dev tasks). MacSweat asks first, and it never closes anything by itself.
 
-## Privacy
+## Private and light
 
-Everything is read on your Mac. There's no account, analytics or tracking. The only network request is the optional **Check for Updates…** menu item, which asks GitHub for the latest version number.
+- Everything is read on your Mac. There's no account, no analytics and no tracking.
+- The only network request is the optional **Check for Updates…** menu item, which asks GitHub for the latest version number.
+- It refreshes every 3 seconds while its panel is open. While closed, it checks overall CPU and memory every 5 seconds and the full process list every 30.
 
-MacSweat refreshes every 3 s while its panel is open. While the panel is closed, it reads overall CPU and memory every 5 s and the full process list every 30 s.
+## Questions
 
-## Build from source
+<details>
+<summary><b>Why a Terminal command and not a download?</b></summary>
+<br>
+
+MacSweat is free and isn't notarized by Apple, which needs a $99-a-year developer account. macOS blocks a zip downloaded in a browser from an app like that. The install script avoids the block, and it's short enough to read before you run it.
+
+</details>
+
+<details>
+<summary><b>I don't see the icon in my menu bar.</b></summary>
+<br>
+
+On macOS 26 and later, allow MacSweat in System Settings ▸ Menu Bar. On a MacBook with a crowded menu bar, the notch can also hide icons; quit another menu bar app to make room.
+
+</details>
+
+<details>
+<summary><b>Which browser tab is the heavy one?</b></summary>
+<br>
+
+A browser shows as one row, because the browser decides which tab runs in which process. Right-click the row and choose **Find Heavy Tabs…** for the steps: in Chrome, Edge and Brave it's Window ▸ Task Manager.
+
+</details>
+
+<details>
+<summary><b>Why don't the numbers match Activity Monitor exactly?</b></summary>
+<br>
+
+- CPU uses Activity Monitor's scale, where 100% is one full core. An app's row adds up its helpers, so it can be higher than any single line in Activity Monitor.
+- The Memory tile is Activity Monitor's "Memory Used".
+- Memory for system services such as WindowServer is an estimate. macOS gives the exact figure only to Activity Monitor.
+- `kernel_task` isn't listed, because macOS doesn't expose it to regular apps. The Heat tile is the better signal for thermal slowdowns.
+
+</details>
+
+## Build it yourself
 
 ```sh
-./build.sh            # universal build → build/MacSweat.app
-./build.sh --install  # also copies it to /Applications and opens it
+./build.sh --install
 ```
 
-Useful flags on the built binary (`MacSweat.app/Contents/MacOS/MacSweat`):
-
-| Flag | What it does |
-|---|---|
-| `--check` | Prints a text reading to compare against `top` or Activity Monitor |
-| `--login-item on\|off\|status` | Same as **Open at Login** in the ⋯ menu |
-| `--demo --snapshot DIR [--light\|--dark]` | Renders the panel with sample data to PNG (used for the website screenshots) |
-
-### Releasing
-
-1. Bump `VERSION`.
-2. Run `scripts/release.sh`. It builds, zips to `dist/`, and stamps `site/install` with the version and checksum.
-3. Commit, then run `scripts/release.sh --publish`. It uploads that exact zip as a GitHub release and deploys `site/` to Vercel.
-
-### Limits
-
-- Memory for other users' processes (WindowServer and other system services) is their resident size, marked ≈. macOS only gives Activity Monitor the exact figure.
-- `kernel_task` isn't listed, because macOS doesn't expose it to regular apps. The Heat tile is the better signal for thermal slowdowns.
+That builds a universal app, copies it to Applications and opens it. Flags, the release steps and notes for contributors are in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## License
 
-[MIT](LICENSE) © 2026 Parth · [macsweat.parthh.dev](https://macsweat.parthh.dev)
+[MIT](LICENSE) © 2026 Parth
