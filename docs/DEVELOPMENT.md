@@ -56,7 +56,7 @@ Things that have gone wrong before:
 - **Test the installer the way a Terminal runs it:** `cat site/install | env LC_ALL=en_US.UTF-8 sh`, with the output uncut.
 - **Every push to `main` publishes the site.** The Vercel project is connected to this repository with its Root Directory set to `site`. If that setting is ever lost, Vercel publishes the whole repository and the homepage returns 404 while the page sits at `/site/`. After any push to `main`, check the live site and not only GitHub.
 - **Never push a new installer checksum to `main` before its release exists.** The site would go live pointing at a zip that isn't there. `--publish` handles the order: tag, release, then `main`.
-- **Bump the images' version tags.** The page loads `assets/screenshot-dark.png?v=2`, and link previews use `assets/og.png?v=1`. Raise the number when an image changes, or browsers and link previews keep showing the old one. When the dark screenshot changes, render `Tools/og-card.html` again too.
+- **Bump the images' version tags.** The page loads `assets/screenshot-dark.png?v=2`, and link previews use `assets/og.png?v=2`. Raise the number when an image changes, or browsers and link previews keep showing the old one. When the dark screenshot changes, render `Tools/og-card.html` again too.
 
 ## How the readings are made
 

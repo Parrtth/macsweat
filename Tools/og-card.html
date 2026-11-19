@@ -25,10 +25,8 @@
     width: 1200px; height: 630px; overflow: hidden; position: relative;
     background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased;
   }
-  .glow {
-    position: absolute; inset: -160px -120px auto 420px; height: 900px;
-    background: radial-gradient(closest-side, rgba(255, 122, 47, 0.22), transparent);
-  }
+  /* The same warm tint as the site's hero while its demo Mac is hot (.heat in site/index.html). */
+  .heat { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255, 112, 40, 0.085), rgba(255, 112, 40, 0.03) 58%, transparent); }
   .copy { position: absolute; left: 80px; top: 72px; width: 560px; height: 486px; display: flex; flex-direction: column; }
   .icon { width: 112px; height: 112px; margin: -10px 0 0 -10px; filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.55)); }
   h1 { font: 700 78px/1.02 var(--round); letter-spacing: -0.03em; margin: 22px 0 0; }
@@ -46,13 +44,13 @@
 </style>
 </head>
 <body>
-  <div class="glow"></div>
+  <div class="heat"></div>
   <img class="shot" src="../site/assets/screenshot-dark.png" alt="">
   <div class="fade"></div>
   <div class="copy">
     <img class="icon" src="../site/assets/icon.png" alt="">
     <h1>Why is your Mac <em>sweating?</em></h1>
-    <p>A free menu bar app that names what’s heating up or slowing down your Mac.</p>
+    <p>A menu bar app that names what’s heating up your Mac, down to the dev server you forgot to stop.</p>
     <div class="foot"><b>macsweat.parthh.dev</b><span>Free · Mac only</span></div>
   </div>
 </body>
