@@ -5,7 +5,10 @@
 
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
     --force-device-scale-factor=1 --window-size=1200,630 --user-data-dir="$(mktemp -d)" \
+    --allow-file-access-from-files --virtual-time-budget=2000 \
     --screenshot="$PWD/site/assets/og.png" "file://$PWD/Tools/og-card.html"
+
+  --allow-file-access-from-files lets the page load the site's font from disk; without it the headline falls back to the system font.
 
   Then bump the ?v= on og:image and twitter:image in site/index.html so caches fetch the new one.
 -->
@@ -14,9 +17,11 @@
 <meta charset="utf-8">
 <title>MacSweat link preview</title>
 <style>
+  /* The site's display font (site/assets/fonts, SIL OFL 1.1). */
+  @font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 500 800; src: url("../site/assets/fonts/bricolage-grotesque-latin.woff2") format("woff2"); }
   :root {
     --bg: #0f0f10; --text: #f4e9d6; --muted: #a8a093; --faint: #7b756b; --cream: #f4e4c8; --accent: #ff7a2f;
-    --round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    --display: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
   }
@@ -29,7 +34,7 @@
   .heat { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255, 112, 40, 0.085), rgba(255, 112, 40, 0.03) 58%, transparent); }
   .copy { position: absolute; left: 80px; top: 72px; width: 560px; height: 486px; display: flex; flex-direction: column; }
   .icon { width: 112px; height: 112px; margin: -10px 0 0 -10px; filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.55)); }
-  h1 { font: 700 78px/1.02 var(--round); letter-spacing: -0.03em; margin: 22px 0 0; }
+  h1 { font: 700 78px/1.02 var(--display); letter-spacing: -0.025em; margin: 22px 0 0; }
   h1 em { font-style: normal; color: var(--accent); }
   p { margin: 22px 0 0; font-size: 27px; line-height: 1.35; color: var(--muted); max-width: 520px; }
   .foot { margin-top: auto; display: flex; align-items: center; gap: 18px; font-size: 21px; color: var(--faint); white-space: nowrap; }
