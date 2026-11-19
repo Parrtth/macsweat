@@ -1,11 +1,12 @@
 #!/bin/zsh
 # Packages a MacSweat release from the version in VERSION.
 #
-#   scripts/release.sh            build, zip to dist/, and stamp site/install with the version + SHA-256
+#   scripts/release.sh            build, zip to dist/, stamp site/install with the version + SHA-256,
+#                                 and stamp the version shown on site/index.html
 #   scripts/release.sh --publish  upload that exact zip as a GitHub release, then push main
 #
-# Between the two steps, commit the stamped site/install. --publish refuses to run on a dirty tree
-# or if the zip no longer matches the checksum in site/install.
+# Between the two steps, commit the stamped site/install and site/index.html. --publish refuses to
+# run on a dirty tree or if the zip no longer matches the checksum in site/install.
 #
 # The website is published by Vercel from the site/ folder on every push to main. So --publish
 # uploads the release first and pushes main last: the new installer never goes live before the
@@ -23,15 +24,18 @@ if [[ "${1:-}" != "--publish" ]]; then
   sha=$(shasum -a 256 dist/MacSweat.zip | awk '{print $1}')
   print "$sha  MacSweat.zip" > dist/MacSweat.zip.sha256
   sed -i '' -e "s/^VERSION=\".*\"/VERSION=\"$version\"/" -e "s/^SHA256=\".*\"/SHA256=\"$sha\"/" site/install
+  # The version link next to the install command (the only line with class="ver").
+  sed -i '' -E "/class=\"ver\"/s/v[0-9]+\.[0-9]+\.[0-9]+/v$version/g" site/index.html
   print "\nMacSweat $version packaged: dist/MacSweat.zip"
-  print "SHA-256 $sha (written to site/install)"
-  print "Next: commit site/install, then run scripts/release.sh --publish"
+  print "SHA-256 $sha (written to site/install; version written to site/index.html)"
+  print "Next: commit site/install and site/index.html, then run scripts/release.sh --publish"
   exit 0
 fi
 
 sha=$(shasum -a 256 dist/MacSweat.zip | awk '{print $1}')
 grep -q "^SHA256=\"$sha\"" site/install || { print "dist/MacSweat.zip doesn't match site/install — run scripts/release.sh again." >&2; exit 1; }
 grep -q "^VERSION=\"$version\"" site/install || { print "site/install isn't stamped with $version." >&2; exit 1; }
+grep -q "releases/tag/v$version\"" site/index.html || { print "site/index.html isn't stamped with $version." >&2; exit 1; }
 [[ -z "$(git status --porcelain)" ]] || { print "Commit your changes first (the working tree isn't clean)." >&2; exit 1; }
 [[ "$(git branch --show-current)" == main ]] || { print "Switch to main first; the website is published from main." >&2; exit 1; }
 # 1. Send the commit up under the release tag only. A tag doesn't trigger a website deploy.

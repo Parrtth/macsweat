@@ -24,6 +24,7 @@ You need a Mac with the Xcode command-line tools. The build targets macOS 13 and
 | `Sources/MacSweat.swift` | Menu bar item, popover, and the command-line flags |
 | `Sources/Demo.swift` | Sample data for `--demo` |
 | `Tools/make-icon.swift` | Draws the app icon; `build.sh` turns it into `Resources/AppIcon.icns` |
+| `Tools/og-card.html` | The 1200×630 link-preview card, built from the icon and the dark screenshot. Its header comment has the command that renders it to `site/assets/og.png` |
 | `site/` | The landing page and the install and uninstall scripts. Vercel publishes this folder |
 | `scripts/release.sh` | Packages and publishes a release |
 
@@ -44,8 +45,8 @@ The website screenshots come from `--demo --snapshot DIR` with `--light` and `--
 ## Releasing
 
 1. Bump `VERSION`.
-2. Run `scripts/release.sh`. It builds, zips to `dist/`, and stamps `site/install` with the version and the zip's SHA-256.
-3. Commit the stamped `site/install`.
+2. Run `scripts/release.sh`. It builds, zips to `dist/`, stamps `site/install` with the version and the zip's SHA-256, and updates the version link beside the install command on `site/index.html`.
+3. Commit the stamped `site/install` and `site/index.html`.
 4. Run `scripts/release.sh --publish` from `main`. It uploads that exact zip as a GitHub release, then pushes `main`, which publishes the site.
 
 Things that have gone wrong before:
@@ -55,7 +56,7 @@ Things that have gone wrong before:
 - **Test the installer the way a Terminal runs it:** `cat site/install | env LC_ALL=en_US.UTF-8 sh`, with the output uncut.
 - **Every push to `main` publishes the site.** The Vercel project is connected to this repository with its Root Directory set to `site`. If that setting is ever lost, Vercel publishes the whole repository and the homepage returns 404 while the page sits at `/site/`. After any push to `main`, check the live site and not only GitHub.
 - **Never push a new installer checksum to `main` before its release exists.** The site would go live pointing at a zip that isn't there. `--publish` handles the order: tag, release, then `main`.
-- **Bump the screenshot's version tag.** The page loads `assets/screenshot-dark.png?v=2`. Raise the number when the screenshot changes, or browsers keep showing the old one.
+- **Bump the images' version tags.** The page loads `assets/screenshot-dark.png?v=2`, and link previews use `assets/og.png?v=1`. Raise the number when an image changes, or browsers and link previews keep showing the old one. When the dark screenshot changes, render `Tools/og-card.html` again too.
 
 ## How the readings are made
 
