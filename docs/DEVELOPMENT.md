@@ -22,7 +22,7 @@ You need the Xcode command-line tools. The build targets macOS 13 and produces o
 | `Sources/MacSweat.swift` | Menu bar item, popover, and the command-line flags |
 | `Sources/Demo.swift` | Sample data for `--demo` |
 | `Tools/make-icon.swift` | Draws the app icon; `build.sh` turns it into `Resources/AppIcon.icns` |
-| `site/` | The landing page and the install and uninstall scripts |
+| `site/` | The landing page and the install and uninstall scripts. Vercel publishes this folder |
 | `scripts/release.sh` | Packages and publishes a release |
 
 ## Flags
@@ -44,14 +44,15 @@ The website screenshots come from `--demo --snapshot DIR` with `--light` and `--
 1. Bump `VERSION`.
 2. Run `scripts/release.sh`. It builds, zips to `dist/`, and stamps `site/install` with the version and the zip's SHA-256.
 3. Commit the stamped `site/install`.
-4. Run `scripts/release.sh --publish`. It pushes, uploads that exact zip as a GitHub release, and deploys `site/` to Vercel.
+4. Run `scripts/release.sh --publish` from `main`. It uploads that exact zip as a GitHub release, then pushes `main`, which publishes the site.
 
 Things that have gone wrong before:
 
 - **Don't rebuild between steps 2 and 4.** Every build produces a slightly different zip, so the checksum in `site/install` would no longer match. `--publish` checks this and stops.
 - **Keep `site/install` and `site/uninstall` plain ASCII.** Under a UTF-8 locale, macOS's `sh` (bash 3.2) reads the first byte of a non-ASCII character as part of a variable name when it follows one directly. `$VERSION` followed by an ellipsis broke the installer in every normal Terminal.
 - **Test the installer the way a Terminal runs it:** `cat site/install | env LC_ALL=en_US.UTF-8 sh`, with the output uncut.
-- **The site doesn't deploy from GitHub.** The Vercel project isn't connected to the repository, so a change under `site/` goes live only with `--publish` or `npx vercel deploy --prod` from `site/`.
+- **Every push to `main` publishes the site.** The Vercel project is connected to this repository with its Root Directory set to `site`. If that setting is ever lost, Vercel publishes the whole repository and the homepage returns 404 while the page sits at `/site/`. After any push to `main`, check the live site and not only GitHub.
+- **Never push a new installer checksum to `main` before its release exists.** The site would go live pointing at a zip that isn't there. `--publish` handles the order: tag, release, then `main`.
 - **Bump the screenshot's version tag.** The page loads `assets/screenshot-dark.png?v=2`. Raise the number when the screenshot changes, or browsers keep showing the old one.
 
 ## How the readings are made
