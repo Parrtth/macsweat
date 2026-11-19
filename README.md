@@ -4,13 +4,13 @@
 
 <p align="center">
   <b>Why is your Mac sweating?</b><br>
-  A free menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.
+  A free Mac menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.
 </p>
 
 <p align="center">
   <a href="https://macsweat.parthh.dev">Website</a> ·
   <a href="https://github.com/Parrtth/macsweat/releases/latest">Latest release</a> ·
-  macOS 13 or later ·
+  Mac only · macOS 13 or later ·
   <a href="LICENSE">MIT</a>
 </p>
 
@@ -37,7 +37,7 @@ It downloads the latest release from GitHub, checks its SHA-256, installs MacSwe
 curl -fsSL https://macsweat.parthh.dev/uninstall | sh
 ```
 
-MacSweat needs macOS 13 Ventura or later, on Apple silicon or Intel.
+MacSweat is for Macs only, running macOS 13 Ventura or later on Apple silicon or Intel. It doesn't run on Windows or Linux.
 
 ## What it does
 
