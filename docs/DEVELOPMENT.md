@@ -2,6 +2,8 @@
 
 MacSweat is a native Swift menu bar app (AppKit and SwiftUI) built with plain `swiftc`. There is no Xcode project and no dependencies.
 
+It's Mac only. It relies on macOS frameworks and system calls, so it doesn't run or build on Windows or Linux.
+
 ## Build
 
 ```sh
@@ -9,7 +11,7 @@ MacSweat is a native Swift menu bar app (AppKit and SwiftUI) built with plain `s
 ./build.sh --install  # also copies it to /Applications and opens it
 ```
 
-You need the Xcode command-line tools. The build targets macOS 13 and produces one app for Apple silicon and Intel.
+You need a Mac with the Xcode command-line tools. The build targets macOS 13 and produces one app for Apple silicon and Intel.
 
 ## Layout
 
