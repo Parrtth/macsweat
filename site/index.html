@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MacSweat — Why is your Mac sweating?</title>
 <meta name="description" content="MacSweat is a free, open-source menu bar app for macOS that names what's heating up or slowing down your Mac, so you can close it yourself.">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0f0f10">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ff8f5c" id="theme">
 <link rel="canonical" href="https://macsweat.parthh.dev/">
 <link rel="icon" type="image/png" href="assets/icon.png">
 <link rel="apple-touch-icon" href="assets/icon.png">
@@ -17,14 +17,14 @@
 <meta property="og:url" content="https://macsweat.parthh.dev/">
 <meta property="og:title" content="MacSweat — Why is your Mac sweating?">
 <meta property="og:description" content="A free, open-source Mac menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.">
-<meta property="og:image" content="https://macsweat.parthh.dev/assets/og.png?v=3">
+<meta property="og:image" content="https://macsweat.parthh.dev/assets/og.png?v=4">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="MacSweat: Why is your Mac sweating? Beside the headline, the MacSweat panel names a Next.js dev server as the app using the most CPU.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MacSweat — Why is your Mac sweating?">
 <meta name="twitter:description" content="A free, open-source Mac menu bar app that names what's heating up or slowing down your Mac, so you can close it yourself.">
-<meta name="twitter:image" content="https://macsweat.parthh.dev/assets/og.png?v=3">
+<meta name="twitter:image" content="https://macsweat.parthh.dev/assets/og.png?v=4">
 <meta name="twitter:image:alt" content="MacSweat: Why is your Mac sweating? Beside the headline, the MacSweat panel names a Next.js dev server as the app using the most CPU.">
 
 <style>
@@ -35,220 +35,167 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
   :root {
-    --bg: #0f0f10;
-    --surface: #19191b;
-    --surface-2: #222225;
-    --line: rgba(244, 228, 200, 0.10);
-    --line-strong: rgba(244, 228, 200, 0.18);
-    --text: #f4e9d6;
-    --muted: #a8a093;
-    --faint: #7b756b;
-    --cream: #f4e4c8;
-    --accent: #ff7a2f;
-    --accent-soft: rgba(255, 122, 47, 0.14);
-    --green: #5fd481;
-    --orange: #ff9f3f;
-    --red: #ff5f52;
-    --ink: #1b1b1d;
-    --round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    --page: #f5f4f1;
+    --ink: #1b100a;                      /* headings, and all text on the desktop */
+    --text: #26221f;
+    --muted: #625e59;
+    --line: rgba(27, 16, 10, 0.13);
+    --hot: #ff5b24;
+    --green: #1e8e46;
+    /* The demo panel uses the app's own light-mode colours. */
+    --p-text: #1d1d1f;
+    --p-muted: #6e6e73;
+    --p-red: #e0352b;
+    --p-orange: #e67e1c;
     --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    /* Display text: headlines, section titles, labels and the wordmark. Body text and the demo keep the system font. */
+    /* Display text: the headline, section titles and the wordmark. Everything else is the system font. */
     --display: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    background: var(--page);
     color: var(--text);
     font: 17px/1.55 var(--sans);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
-  a { color: inherit; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
-  a:hover { text-decoration-color: var(--accent); }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-  h1, h2, h3 { font-family: var(--display); letter-spacing: -0.025em; line-height: 1.05; margin: 0; text-wrap: balance; }
+  a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: currentColor; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 6px; }
+  h1, h2, h3 { font-family: var(--display); color: var(--ink); margin: 0; text-wrap: balance; }
   p { margin: 0; text-wrap: pretty; }
   .wrap { width: min(1140px, 100% - 40px); margin-inline: auto; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .skip { position: absolute; left: 16px; top: -60px; background: var(--cream); color: var(--ink); padding: 8px 14px; border-radius: 10px; z-index: 10; }
-  .skip:focus { top: 12px; }
+  .skip { position: absolute; left: 16px; top: -60px; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 10px; z-index: 10; }
+  .skip:focus { top: 52px; }
 
-  /* Nav */
-  .nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font: 600 17px var(--display); text-decoration: none; }
-  .brand svg { width: 30px; height: 30px; margin-left: -3px; }
-  .nav nav { display: flex; gap: clamp(14px, 3vw, 28px); font-size: 15px; }
-  .nav nav a { color: var(--muted); text-decoration: none; }
-  .nav nav a:hover { color: var(--text); }
-
-  /* Hero: the pitch on the left, the live demo on the right */
-  .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr); grid-template-rows: auto auto auto; column-gap: clamp(28px, 4.5vw, 60px); row-gap: 0; align-items: stretch; padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 7vw, 88px); }
-  .pitch { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: center; }
-  .demo { display: contents; }
-  .hint { grid-column: 2; grid-row: 1; }
-  .mac { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; }
-  .mac .panel { flex: 1; }
-  .result { grid-column: 2; grid-row: 3; }
-  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.3rem); font-weight: 700; margin-top: 10px; }
-  .hero h1 em { font-style: normal; color: var(--accent); }
-  .hero .sub { color: var(--muted); font-size: clamp(1.05rem, 1.7vw, 1.22rem); max-width: 530px; margin-top: 18px; }
-  /* Headline, subhead and install command stack as one block, centred against the demo; the command shares the paragraph's width. */
-  .get { max-width: 530px; margin-top: 28px; }
-  .hero .cmd { margin-top: 10px; max-width: none; }
-  .meta { color: var(--faint); font-size: 14px; line-height: 1.3; }
-  .meta a { color: var(--muted); }
-  .hint { color: var(--muted); font-size: 15px; text-align: center; margin-bottom: 14px; }
-  .hint b { font-family: var(--display); color: var(--accent); }
-  .hint strong { color: var(--text); }
-  .result { margin-top: 16px; min-height: 62px; text-align: center; }
-  .result p { font: 600 clamp(1.15rem, 2vw, 1.4rem)/1.2 var(--display); color: var(--green); }
-  .result small { display: block; color: var(--muted); font-size: 14.5px; margin-top: 6px; }
-  .result[hidden] { display: block; visibility: hidden; }
-  .linkbtn { font: inherit; color: var(--text); background: none; border: 0; padding: 0; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; cursor: pointer; }
-  .linkbtn:hover { text-decoration-color: var(--accent); }
-
-  /* Command block */
-  .cmd {
-    display: flex; align-items: center; gap: 10px; max-width: 610px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 7px 7px 7px 16px;
-  }
-  .cmd code { flex: 1; min-width: 0; font: 13px/1.5 var(--mono); color: var(--cream); white-space: pre; overflow-x: auto; scrollbar-width: none; text-align: left; padding: 6px 0; }
-  .cmd code::-webkit-scrollbar { display: none; }
-  .cmd code::before { content: "$ "; color: var(--accent); user-select: none; -webkit-user-select: none; }
-  .copy {
-    flex: none; min-width: 66px; font: 600 14px var(--round); color: var(--ink); background: var(--cream);
-    border: 0; border-radius: 15px; padding: 9px 12px; cursor: pointer; transition: transform 0.12s, background 0.2s;
-  }
-  .copy:hover { background: #fff; }
-  .copy:active { transform: scale(0.96); }
-  .copy.done { background: var(--green); }
-  .linkbtn.done { color: var(--green); }
-
-  /* Sections */
-  section { padding: clamp(56px, 9vw, 110px) 0; }
-  .eyebrow { font: 600 13px var(--display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-  h2 { font-size: clamp(2rem, 5.2vw, 3.3rem); font-weight: 700; }
-
-  /* The demo Mac */
-  .mac { text-align: left; background: linear-gradient(180deg, #1b1b1e, #141416); border: 1px solid var(--line); border-radius: 22px; padding: 0 clamp(10px, 2vw, 18px) clamp(14px, 2.4vw, 22px); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8); }
-  .menubar { display: flex; justify-content: flex-end; align-items: center; height: 34px; font: 500 13px var(--sans); color: rgba(244, 233, 214, 0.78); padding: 0 4px; }
-  .menubar .right { display: flex; gap: 14px; align-items: center; flex: none; }
-  .status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: 7px; background: rgba(255, 255, 255, 0.12); color: var(--text); font-variant-numeric: tabular-nums; transition: color 0.4s; }
+  /* The top of the page is a Mac desktop. Its menu bar is the site's navigation, and MacSweat sits in it the way the app does. */
+  .bar { position: absolute; z-index: 3; top: 0; left: 0; right: 0; height: 40px; color: var(--ink); font: 500 14px/1 var(--sans);
+    background: rgba(255, 255, 255, 0.34); border-bottom: 1px solid rgba(27, 16, 10, 0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5); backdrop-filter: blur(24px) saturate(1.5); }
+  .bar .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .bar nav { display: flex; align-items: center; height: 100%; margin-left: -10px; }
+  .bar a { display: inline-flex; align-items: center; gap: 7px; height: 100%; padding: 0 10px; text-decoration: none; white-space: nowrap; }
+  .bar a:hover { background: rgba(255, 255, 255, 0.4); }
+  .bar .brand { font-weight: 700; }
+  .bar .brand svg { width: 22px; height: 22px; }
+  .bar .right { display: flex; align-items: center; gap: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* The status item, drawn open: macOS highlights the item whose panel is showing. */
+  .status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 6px; background: rgba(255, 255, 255, 0.6); font-weight: 600; transition: color 0.4s; }
   .status svg { width: 20px; height: 16px; }
-  .status.hot { color: var(--red); }
+  .status.hot { color: #c21a0e; }
 
-  .panel { margin-left: auto; width: min(100%, 470px); background: #1f1f22; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; padding: 16px; font: 13px/1.35 var(--sans); box-shadow: 0 24px 50px -18px rgba(0, 0, 0, 0.75); }
-  .verdict { display: flex; gap: 10px; align-items: flex-start; min-height: 62px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex: none; background: var(--red); transition: background 0.4s; }
-  .verdict h3 { font: 600 17px/1.25 var(--sans); letter-spacing: -0.01em; }
-  .verdict p { color: var(--muted); margin-top: 3px; }
-  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 12px; }
-  .tile { background: rgba(255, 255, 255, 0.055); border-radius: 10px; padding: 9px 10px; min-height: 72px; display: flex; flex-direction: column; }
-  .tile span { color: var(--muted); font-size: 11px; }
-  .tile b { font: 600 18px/1.25 var(--round); font-variant-numeric: tabular-nums; transition: color 0.4s; white-space: nowrap; }
-  .tile small { color: var(--muted); font-size: 10.5px; white-space: nowrap; }
+  .desk { position: relative; isolation: isolate; overflow: hidden; color: var(--ink);
+    background: radial-gradient(110% 130% at 74% 30%, #f4f9fb 0%, #dcebf1 42%, #c9dee8 100%); }
+  .stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); column-gap: clamp(32px, 5vw, 76px); padding-top: 40px; }
+  .pitch { align-self: center; padding: clamp(56px, 9vw, 110px) 0 clamp(56px, 9vw, 120px); }
+  .pitch h1 { font-size: clamp(2.9rem, 6.9vw, 5.6rem); font-weight: 800; line-height: 0.94; letter-spacing: -0.045em; }
+  .pitch .sub { font-size: clamp(1.1rem, 1.7vw, 1.3rem); line-height: 1.45; max-width: 500px; margin-top: clamp(18px, 2.4vw, 28px); }
+  .pitch .cmd { margin-top: clamp(24px, 3vw, 36px); max-width: 550px; }
+  .fine { font-size: 14.5px; line-height: 1.5; margin-top: 12px; }
+  .pitch .fine { opacity: 0.86; }
+
+  .demo { padding: 11px 0 clamp(40px, 6vw, 72px); }
+  .cue { margin-top: 18px; font-size: 15px; line-height: 1.45; text-align: center; min-height: 44px; }
+  .cue b { font-weight: 700; }
+  .cue[hidden] { display: none; }
+  .linkbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 3px; cursor: pointer; }
+  .linkbtn:hover { text-decoration-color: currentColor; }
+
+  /* Command line */
+  .cmd { display: flex; align-items: center; gap: 10px; background: var(--ink); border-radius: 12px; padding: 6px 6px 6px 16px; }
+  .cmd code { flex: 1; min-width: 0; font: 13.5px/1.5 var(--mono); color: #fff4ec; white-space: pre; overflow-x: auto; scrollbar-width: none; text-align: left; padding: 7px 0; }
+  .cmd code::-webkit-scrollbar { display: none; }
+  .cmd code::before { content: "$ "; color: #ff8a52; user-select: none; -webkit-user-select: none; }
+  .copy { flex: none; min-width: 68px; font: 600 14px var(--sans); color: #fff; background: rgba(255, 255, 255, 0.16); border: 0; border-radius: 8px; padding: 9px 12px; cursor: pointer; transition: background 0.2s; }
+  .copy:hover { background: rgba(255, 255, 255, 0.28); }
+  .copy.done { background: var(--green); }
+  .linkbtn.done { text-decoration: none; }
+  .cmd .copy:focus-visible { outline-color: #fff; outline-offset: 1px; }
+
+  /* The demo panel, hanging from the status item */
+  .panel { position: relative; margin-left: auto; width: min(100%, 440px); background: #fff; color: var(--p-text); border-radius: 14px; padding: 16px; font: 13px/1.35 var(--sans);
+    box-shadow: 0 0 0 1px rgba(27, 16, 10, 0.1), 0 30px 60px -18px rgba(40, 20, 10, 0.45); }
+  .panel::before { content: ""; position: absolute; top: -6px; left: var(--arrow, 66%); width: 14px; height: 14px; margin-left: -7px; background: #fff; border-radius: 3px 0 0 0; transform: rotate(45deg); box-shadow: -1px -1px 0 rgba(27, 16, 10, 0.1); }
+  .verdict { position: relative; display: flex; gap: 10px; align-items: flex-start; min-height: 58px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex: none; background: var(--p-red); transition: background 0.4s; }
+  .verdict h3 { font: 600 17px/1.25 var(--sans); color: var(--p-text); letter-spacing: -0.01em; }
+  .verdict p { color: var(--p-muted); margin-top: 3px; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
+  .tile { background: #f2f2f3; border-radius: 10px; padding: 9px 10px; min-height: 74px; display: flex; flex-direction: column; }
+  .tile span { color: var(--p-muted); font-size: 11px; }
+  .tile b { font: 600 18px/1.3 var(--sans); font-variant-numeric: tabular-nums; transition: color 0.4s; white-space: nowrap; }
+  .tile small { color: var(--p-muted); font-size: 11px; white-space: nowrap; transition: color 0.4s; }
   .tile svg { margin-top: auto; width: 100%; height: 14px; overflow: visible; }
-  .tile polyline { fill: none; stroke: #4c8dff; stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-  .t-red { color: var(--red); } .t-orange { color: var(--orange); }
-  .rows { list-style: none; margin: 0; padding: 0; }
-  .panel .rows { min-height: 168px; } /* four rows: the panel keeps its height when one is removed */
-  .row { display: grid; grid-template-columns: 26px minmax(0, 1fr) 46px 50px; gap: 8px; align-items: center; min-height: 42px; padding: 5px 6px; border-radius: 7px; transition: opacity 0.3s, transform 0.3s, background 0.15s; }
-  .row:hover, .row:focus-within { background: rgba(255, 255, 255, 0.06); }
+  .tile polyline { fill: none; stroke: #2f7cf6; stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .t-red { color: var(--p-red); } .t-orange { color: var(--p-orange); }
+  .tile small.t-orange { color: var(--p-orange); }
+  .rows { list-style: none; margin: 0; padding: 0; min-height: 176px; } /* four rows: the panel keeps its height when one is removed */
+  .row { display: grid; grid-template-columns: 26px minmax(0, 1fr) 46px 50px; gap: 9px; align-items: center; min-height: 44px; padding: 5px 6px; border-radius: 7px; transition: opacity 0.3s, transform 0.3s, background 0.15s; }
+  .row:hover, .row:focus-within { background: rgba(0, 0, 0, 0.045); }
   .row.leaving { opacity: 0; transform: translateX(14px); }
-  .ico { width: 24px; height: 24px; border-radius: 6.5px; display: grid; place-items: center; font: 700 12px var(--round); color: #fff; }
-  .ico.task, .ico.sys { background: none; border: 1.4px solid rgba(244, 233, 214, 0.45); color: rgba(244, 233, 214, 0.75); font: 600 9px var(--mono); }
-  .ico.sys { border: 0; }
-  .ico.sys svg { width: 20px; height: 20px; }
+  .ico { width: 26px; height: 26px; display: grid; place-items: center; color: #8a8a8e; }
+  img.ico { mix-blend-mode: multiply; } /* cropped from the app's own screenshot, white background and all */
+  .ico svg { width: 22px; height: 22px; }
   .row strong { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .row em { display: block; font-style: normal; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row em { display: block; font-style: normal; color: var(--p-muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .num { text-align: right; font-variant-numeric: tabular-nums; }
-  .act { justify-self: end; font: 500 11.5px var(--sans); color: var(--text); background: rgba(255, 255, 255, 0.14); border: 0; border-radius: 6px; padding: 3px 9px; cursor: pointer; opacity: 0.5; transition: opacity 0.15s, background 0.15s; }
-  .row:hover .act, .row:focus-within .act, .act.pulse { opacity: 1; }
-  .act:hover { background: rgba(255, 255, 255, 0.26); }
-  .act.pulse { background: var(--accent); color: #1b0d04; font-weight: 600; animation: pulse 1.6s ease-in-out infinite; }
-  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 122, 47, 0.22); } }
-  @media (hover: none) { .act { opacity: 1; } }
+  .act { justify-self: end; font: 500 12px var(--sans); color: var(--p-text); background: rgba(0, 0, 0, 0.08); border: 0; border-radius: 6px; padding: 4px 9px; cursor: pointer; transition: background 0.15s; }
+  .act:hover { background: rgba(0, 0, 0, 0.16); }
+  .act.pulse { background: var(--hot); color: #2a0c00; font-weight: 700; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 91, 36, 0.25); } }
 
-  /* What it does: the real panel, with a spotlight that moves to whichever feature you point at.
-     Spots are percentages of the screenshot, so they hold at any size. */
-  .tour { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: clamp(28px, 6vw, 80px); align-items: center; margin-top: clamp(28px, 5vw, 48px); }
-  .tour-shot { margin: 0; }
-  .tour-shot figcaption { color: var(--faint); font-size: 13.5px; text-align: center; margin-top: 12px; }
-  .shotwrap { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line-strong); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9); }
-  .shotwrap img { display: block; width: 100%; height: auto; }
-  .spot { position: absolute; border: 2px solid var(--accent); border-radius: 10px; box-shadow: 0 0 0 9999px rgba(10, 10, 11, 0.6);
-    transition: left 0.45s cubic-bezier(0.3, 0.7, 0.2, 1), top 0.45s cubic-bezier(0.3, 0.7, 0.2, 1), width 0.45s cubic-bezier(0.3, 0.7, 0.2, 1), height 0.45s cubic-bezier(0.3, 0.7, 0.2, 1); }
-  /* Where the app shows Stop on hover: the column right of Memory */
-  .stop-pill { position: absolute; left: 86.2%; top: 29.4%; width: 8.4%; height: 3.6%; display: grid; place-items: center; font: 500 11px var(--sans); color: var(--text);
-    background: #3a3a3e; border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 6px; opacity: 0; transition: opacity 0.3s; }
-  .shotwrap.stop .stop-pill { opacity: 1; }
-  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-  .steps button { width: 100%; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; align-items: start; text-align: left; font: inherit; color: inherit;
-    background: none; border: 1px solid transparent; border-radius: 16px; padding: 16px 18px; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
-  .steps button:hover { background: rgba(255, 255, 255, 0.03); }
-  .steps button[aria-pressed="true"] { background: var(--surface); border-color: var(--line); }
-  .steps .k { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 14px var(--mono); color: var(--faint); border: 1px solid var(--line-strong); }
-  .steps button[aria-pressed="true"] .k { color: var(--ink); background: var(--accent); border-color: var(--accent); }
-  .steps b { display: block; font: 650 clamp(1.15rem, 1.8vw, 1.4rem)/1.25 var(--display); letter-spacing: -0.015em; }
-  .steps em { display: block; font-style: normal; color: var(--muted); margin-top: 4px; }
+  /* Under the desktop: the hero's heavy type, in ink. */
+  .sec { padding: clamp(56px, 8vw, 100px) 0; }
+  h2 { font-size: clamp(2.2rem, 4.8vw, 3.7rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
+  .lede { color: var(--muted); max-width: 62ch; margin-top: 16px; font-size: clamp(1.05rem, 1.5vw, 1.2rem); }
 
-  /* Why not Activity Monitor: a three-column comparison; the MacSweat column is tinted */
-  .vs { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: clamp(28px, 5vw, 48px); font-size: 16px; text-align: left; }
-  .vs .q { width: 30%; }
-  .vs th, .vs td { padding: 16px 18px; vertical-align: top; border-bottom: 1px solid var(--line); }
-  .vs thead th { font: 600 13px var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); padding-top: 18px; padding-bottom: 12px; }
-  .vs thead th:last-child { color: var(--accent); }
-  .vs tbody th { padding-left: 0; font: 600 1.05rem/1.35 var(--display); letter-spacing: -0.01em; color: var(--text); }
-  .vs td { color: var(--muted); }
-  .vs td:last-child { color: var(--text); }
-  .vs th:last-child, .vs td:last-child { background: rgba(255, 122, 47, 0.06); }
-  .vs thead th:last-child { border-radius: 14px 14px 0 0; }
-  .vs tbody tr:last-child td:last-child { border-radius: 0 0 14px 14px; }
-  .vs tbody tr:last-child > * { border-bottom: 0; }
-  .vs code { font: 0.86em var(--mono); color: var(--cream); }
+  /* The real panel with a note beside each part. Notes sit at the height of the part they describe:
+     --y is that part's centre, and each bracket's top and height are percentages of the screenshot. */
+  .anno { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); margin: clamp(36px, 5vw, 56px) 0 34px; }
+  .shot { margin: 0; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgba(27, 16, 10, 0.1), 0 34px 70px -28px rgba(27, 16, 10, 0.45); }
+  .callouts { position: relative; }
+  .br { position: absolute; left: 12px; width: 8px; border: 2px solid var(--ink); border-left: 0; border-radius: 0 5px 5px 0; }
+  .notes { list-style: none; margin: 0; padding: 0; }
+  .notes li { position: absolute; left: 0; right: 0; top: var(--y); transform: translateY(-50%); padding-left: 78px; max-width: 600px; }
+  .notes li::before { content: ""; position: absolute; left: 21px; top: 50%; width: 45px; height: 2px; margin-top: -1px; background: var(--ink); }
+  .notes b { display: block; font: 700 clamp(1.2rem, 1.9vw, 1.5rem)/1.2 var(--display); color: var(--ink); letter-spacing: -0.015em; }
+  .notes span { display: block; color: var(--text); margin-top: 4px; font-size: 16.5px; line-height: 1.5; }
 
+  /* Install: the desktop again, already cool. The page starts hot and ends calm, so the hero is the only orange on it. */
+  .closer { color: var(--ink); background: radial-gradient(110% 150% at 24% 55%, #f4f9fb 0%, #dcebf1 42%, #c9dee8 100%); }
+  .closer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 550px); column-gap: clamp(32px, 5vw, 76px); row-gap: 24px; align-items: center; padding-block: clamp(64px, 9vw, 124px); }
+  .closer h2 { font-size: clamp(2.6rem, 6vw, 4.7rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.045em; }
+  .closer .how { font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.45; }
+  .closer .cmd { margin-top: 22px; }
+  .closer .fine { opacity: 0.88; }
 
-  /* Install */
-  .install { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: clamp(26px, 5vw, 56px); text-align: center; }
-  .install .cmd { margin: 28px auto 0; background: var(--bg); max-width: 530px; }
-  .install-meta { margin-top: 18px; }
-  .install-links { margin-top: 8px; }
-  .install-links .linkbtn { color: var(--muted); }
-
-  footer { border-top: 1px solid var(--line); padding: 28px 0 44px; color: var(--muted); font-size: 14.5px; }
-  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
+  footer { padding: 26px 0 44px; color: var(--muted); font-size: 14.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
   footer nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 
   @media (max-width: 900px) {
-    .hero { grid-template-columns: minmax(0, 1fr); text-align: center; }
-    .pitch, .hint, .mac, .result { grid-column: 1; grid-row: auto; }
-    .pitch { display: block; margin-bottom: 28px; }
-    .hero .sub, .get { margin-inline: auto; }
+    .stage { grid-template-columns: minmax(0, 1fr); }
+    .pitch { padding-bottom: 36px; }
+    .demo { padding-top: 0; }
     .panel { margin-inline: auto; }
-    /* List first, then a smaller panel right under it, so the spotlight stays in view while you tap */
-    .tour { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .steps { order: 1; }
-    .tour-shot { order: 2; width: 100%; max-width: 320px; margin-inline: auto; }
+    .panel::before { display: none; } /* the panel no longer sits under the status item */
+    .anno { grid-template-columns: minmax(0, 1fr); row-gap: 28px; margin-bottom: 0; }
+    .shot { max-width: 360px; }
+    .br, .notes li::before { display: none; }
+    .notes { display: grid; gap: 20px; }
+    .notes li { position: static; transform: none; padding-left: 0; }
+    .closer .wrap { grid-template-columns: minmax(0, 1fr); }
   }
-  /* On narrow screens each comparison row becomes a card: the question, then one labelled line per app. */
-  @media (max-width: 680px) {
-    .vs, .vs tbody, .vs tr, .vs th, .vs td { display: block; width: auto; }
-    .vs thead, .vs colgroup { display: none; }
-    .vs tr { padding: 16px 0; border-bottom: 1px solid var(--line); }
-    .vs tbody tr:last-child { border-bottom: 0; }
-    .vs th, .vs td, .vs td:last-child { border: 0; padding: 0; background: none; }
-    .vs tbody th { width: auto; margin-bottom: 8px; }
-    .vs td, .vs td:last-child { position: relative; padding: 3px 0 3px 9.5rem; font-size: 15px; }
-    .vs td::before { content: attr(data-label); position: absolute; left: 0; top: 4px; color: var(--faint); font-size: 13.5px; }
-    .vs td:last-child::before { color: var(--accent); }
-  }
-  @media (max-width: 520px) {
+  @media (max-width: 560px) {
     body { font-size: 16px; }
-    .nav nav a.hide-s { display: none; }
+    .bar .hide-s, .bar .clock { display: none; }
     .panel { padding: 12px; }
+    .tile b { font-size: 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -256,22 +203,22 @@
     * { transition-duration: 0.01ms !important; }
   }
 
-  /* Hero heat: the hero runs warm while the demo Mac is hot. Stopping the culprit sends one cooling wave out from the Stop button. */
+  /* Heat. The desktop is hot while the demo Mac is working hard. Stopping the culprit sends one cooling wave out from the
+     button you pressed, which wipes the hot layer away and leaves the cool desktop that is the hero's own background. */
   @property --r { syntax: '<length>'; inherits: false; initial-value: 0px; }
-  .hero { isolation: isolate; }
-  /* The tint starts under the header and fades in, so the nav and its dark logo sit on the page's plain near-black. */
-  .heat, .chill { position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); pointer-events: none; }
-  .heat { background: linear-gradient(180deg, transparent, rgba(255, 112, 40, 0.085) 140px, rgba(255, 112, 40, 0.03) 62%, transparent); transition: opacity 1.6s ease; }
+  .heat, .frost { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .heat { background: radial-gradient(110% 130% at 74% 30%, #ffa253 0%, #ff6a2b 40%, #f8501f 100%); transition: opacity 1.6s ease; }
   .heat.cooling {
     -webkit-mask-image: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 220px), #000 var(--r));
             mask-image: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 220px), #000 var(--r));
     animation: wave 1.5s cubic-bezier(0.22, 0.7, 0.2, 1) forwards; }
   .heat.cold { opacity: 0; transition: none; }
-  .chill { opacity: 0;
-    background: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 200px), rgba(140, 200, 255, 0.08) calc(var(--r) - 60px), transparent var(--r)); }
-  .chill.go { animation: wave 1.5s cubic-bezier(0.22, 0.7, 0.2, 1) forwards, chill 1.5s ease-in forwards; }
+  /* The front of the wave: a pale ring that travels with it. */
+  .frost { opacity: 0;
+    background: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 260px), rgba(255, 255, 255, 0.8) calc(var(--r) - 50px), transparent var(--r)); }
+  .frost.go { animation: wave 1.5s cubic-bezier(0.22, 0.7, 0.2, 1) forwards, frost 1.5s ease-in forwards; }
   @keyframes wave { from { --r: 0px; } to { --r: 2800px; } }
-  @keyframes chill { 0% { opacity: 1; } 60% { opacity: 0.8; } 100% { opacity: 0; } }
+  @keyframes frost { 0% { opacity: 1; } 60% { opacity: 0.8; } 100% { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -294,110 +241,87 @@
   </defs>
 </svg>
 
-<header class="wrap nav">
-  <a class="brand" href="#top" aria-label="MacSweat home">
-    <svg aria-hidden="true"><use href="#logo"/></svg>MacSweat
-  </a>
-  <nav aria-label="Primary">
-    <a class="hide-s" href="#what">What it does</a>
-    <a href="#install">Install</a>
-    <a href="https://github.com/Parrtth/macsweat">GitHub</a>
-  </nav>
+<header class="bar">
+  <div class="wrap">
+    <nav aria-label="Primary">
+      <a class="brand" href="#top" aria-label="MacSweat home"><svg aria-hidden="true"><use href="#logo"/></svg>MacSweat</a>
+      <a class="hide-s" href="#panel">What it shows</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/Parrtth/macsweat">GitHub</a>
+    </nav>
+    <div class="right" aria-hidden="true">
+      <span class="status hot" id="status"><svg><use href="#glyph"/></svg><span id="status-pct">78%</span></span>
+      <span class="clock"><span class="hide-s" id="clock-day"></span> <span id="clock-time">9:41</span></span>
+    </div>
+  </div>
 </header>
 
 <main id="main">
-  <div class="wrap hero" id="top">
-    <div class="heat" aria-hidden="true"></div><div class="chill" aria-hidden="true"></div>
-    <div class="pitch">
-      <h1>Why is your Mac <em>sweating?</em></h1>
-      <p class="sub">A menu bar app that names what’s heating up your Mac, down to the dev server you forgot to stop.</p>
-      <div class="get">
-        <p class="meta">Mac&nbsp;only&nbsp;· macOS&nbsp;13+&nbsp;· Free&nbsp;and&nbsp;open&nbsp;source</p>
+  <div class="desk" id="top">
+    <div class="heat" aria-hidden="true"></div><div class="frost" aria-hidden="true"></div>
+    <div class="wrap stage">
+      <div class="pitch">
+        <h1>Why is your Mac sweating?</h1>
+        <p class="sub">MacSweat lives in your menu bar and names what’s heating up or slowing down your Mac, down to the dev server you forgot to stop.</p>
         <div class="cmd" role="group" aria-label="Install command">
-        <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
-        <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
-      </div>
-      </div>
-    </div>
-    <div class="demo" id="try">
-      <p class="hint"><b>Try it.</b> This Mac is sweating. Find the culprit and press <strong>Stop</strong>.</p>
-      <div class="mac">
-        <div class="menubar" aria-hidden="true">
-          <div class="right"><span class="status hot" id="status"><svg><use href="#glyph"/></svg><span id="status-pct">78%</span></span><span>9:41</span></div>
+          <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
+          <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
         </div>
+        <p class="fine">Free and open source. Mac only, macOS&nbsp;13 or later.</p>
+      </div>
+      <div class="demo" id="try">
         <div class="panel" role="group" aria-label="MacSweat panel demo">
           <div class="verdict" aria-live="polite">
             <span class="dot" id="dot"></span>
             <div><h3 id="headline"></h3><p id="detail"></p></div>
           </div>
           <div class="tiles">
-            <div class="tile"><span>CPU</span><b id="t-cpu"></b><small>of 10 cores</small><svg viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><polyline id="spark"/></svg></div>
+            <div class="tile"><span>CPU</span><b id="t-cpu"></b><svg viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><polyline id="spark"/></svg></div>
+            <div class="tile"><span>Memory</span><b id="t-mem"></b><small id="t-mem-note"></small></div>
             <div class="tile"><span>Heat</span><b id="t-heat"></b></div>
           </div>
           <ul class="rows" id="rows"></ul>
         </div>
-      </div>
-      <div class="result" id="result" hidden>
-        <p>Phew. That’s all there is to it.</p>
-        <small>The real app asks before it closes anything. <button class="linkbtn" type="button" id="reset">Make it sweat again</button></small>
+        <p class="cue" id="cue-hot">Try it. This Mac is running hot: press <b>Stop</b> on the culprit.</p>
+        <p class="cue" id="cue-calm" hidden><b>Phew.</b> The real app asks before it closes anything. <button class="linkbtn" type="button" id="reset">Make it sweat again</button></p>
       </div>
     </div>
   </div>
 
-  <section id="what" aria-labelledby="what-h">
+  <section class="sec" id="panel" aria-labelledby="panel-h">
     <div class="wrap">
-      <p class="eyebrow">What it does</p>
-      <h2 id="what-h">One click. One answer.</h2>
-      <div class="tour">
-        <figure class="tour-shot">
-          <div class="shotwrap">
-            <img src="assets/screenshot-dark.png?v=2" width="500" height="700" loading="lazy" alt="The real MacSweat panel: a verdict line, tiles for CPU, memory and heat, a list of background tasks, and apps sorted by CPU.">
-            <span class="stop-pill" aria-hidden="true">Stop</span>
-            <span class="spot" id="spot" aria-hidden="true"></span>
-          </div>
-          <figcaption>The real panel, captured from the app with sample data.</figcaption>
+      <h2 id="panel-h">What the panel shows</h2>
+      <p class="lede">This is the real panel, captured from the app with sample data.</p>
+      <div class="anno">
+        <figure class="shot">
+          <img src="assets/screenshot-light.png?v=2" width="500" height="700" loading="lazy" alt="The MacSweat panel: a verdict line, tiles for CPU, memory and heat, a list of background tasks, and apps sorted by CPU.">
         </figure>
-        <ol class="steps">
-          <li><button type="button" data-spot="2.5,1.5,78,9.6" aria-pressed="true"><span class="k">1</span><span><b>Names the culprit</b><em>One sentence, with a green, orange or red dot.</em></span></button></li>
-          <li><button type="button" data-spot="3,45.6,94,35.2" aria-pressed="false"><span class="k">2</span><span><b>Cuts through helper soup</b><em>Chrome’s 25 helpers become one row. macOS services get plain names.</em></span></button></li>
-          <li><button type="button" data-spot="3,24.6,94,15.8" aria-pressed="false"><span class="k">3</span><span><b>Finds what you forgot</b><em>Dev servers left running, with their project and uptime.</em></span></button></li>
-          <li><button type="button" data-spot="3,28.4,94,5.9" data-stop aria-pressed="false"><span class="k">4</span><span><b>You decide what closes</b><em>Hover a row for Quit or Stop. It asks first, and never closes anything on its own.</em></span></button></li>
-        </ol>
+        <div class="callouts">
+          <i class="br" style="top:1.6%;height:9.4%" aria-hidden="true"></i>
+          <i class="br" style="top:25.2%;height:14.8%" aria-hidden="true"></i>
+          <i class="br" style="top:42.4%;height:48%" aria-hidden="true"></i>
+          <i class="br" style="top:94.6%;height:3.8%" aria-hidden="true"></i>
+          <ul class="notes">
+            <li style="--y:6.3%"><b>The culprit, in one sentence</b><span>It names what’s using the most CPU and memory. The dot beside it turns green, orange or red.</span></li>
+            <li style="--y:32.6%"><b>What you left running</b><span>Dev servers and scripts, with their project and how long they’ve been up. Hover a row to stop one. MacSweat asks first, and it never closes anything by itself.</span></li>
+            <li style="--y:66.4%"><b>Apps without the helper soup</b><span>Chrome’s 25 helpers count as Chrome. macOS services get a plain name and a line about what they’re doing.</span></li>
+            <li style="--y:96.5%"><b>Nothing leaves your Mac</b><span>No account, no analytics. The only network request is the optional Check for Updates menu item.</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="vs" aria-labelledby="vs-h">
+  <section class="closer" id="install" aria-labelledby="install-h">
     <div class="wrap">
-      <p class="eyebrow">Why not Activity Monitor?</p>
-      <h2 id="vs-h">Hundreds of processes aren’t an answer.</h2>
-      <!-- Explicit roles keep this a table for screen readers when the narrow layout changes its display. -->
-      <table class="vs" role="table">
-        <colgroup><col class="q"><col><col></colgroup>
-        <thead role="rowgroup">
-          <tr role="row"><td role="cell"></td><th role="columnheader" scope="col">Activity Monitor</th><th role="columnheader" scope="col">MacSweat</th></tr>
-        </thead>
-        <tbody role="rowgroup">
-          <tr role="row"><th role="rowheader" scope="row">What’s slowing my Mac?</th><td role="cell" data-label="Activity Monitor">Sort hundreds of rows yourself</td><td role="cell" data-label="MacSweat">One sentence names it</td></tr>
-          <tr role="row"><th role="rowheader" scope="row">Your browser</th><td role="cell" data-label="Activity Monitor">Every helper process is its own row</td><td role="cell" data-label="MacSweat">One row: Google Chrome</td></tr>
-          <tr role="row"><th role="rowheader" scope="row">macOS services</th><td role="cell" data-label="Activity Monitor"><code>mds_stores</code>, <code>bird</code>, <code>cloudd</code></td><td role="cell" data-label="MacSweat">Spotlight indexing, iCloud sync</td></tr>
-          <tr role="row"><th role="rowheader" scope="row">A forgotten dev server</th><td role="cell" data-label="Activity Monitor"><code>node</code> or <code>python</code>, with no project name</td><td role="cell" data-label="MacSweat">Named, with its project and how long it’s been up</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section id="install" aria-labelledby="install-h">
-    <div class="wrap">
-      <div class="install">
-        <p class="eyebrow">Install</p>
-        <h2 id="install-h">One line in Terminal.</h2>
+      <h2 id="install-h">Install MacSweat</h2>
+      <div>
+        <p class="how">Paste this into Terminal. It downloads the latest release from GitHub, checks it, and puts MacSweat in your Applications folder.</p>
         <div class="cmd" role="group" aria-label="Install command">
           <code>curl -fsSL https://macsweat.parthh.dev/install | sh</code>
           <button class="copy" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/install | sh">Copy</button>
         </div>
-        <p class="meta install-meta">Mac&nbsp;only&nbsp;· macOS&nbsp;13+&nbsp;· No&nbsp;account,&nbsp;no&nbsp;tracking&nbsp;· Checksum&nbsp;verified&nbsp;· Run&nbsp;it&nbsp;again&nbsp;to&nbsp;update</p>
-        <p class="meta install-links"><a class="ver" href="https://github.com/Parrtth/macsweat/releases/tag/v1.0.0" aria-label="Release notes for v1.0.0">v1.0.0</a>&nbsp;· <a href="/install">Read the script</a>&nbsp;· <button class="linkbtn" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/uninstall | sh" data-label="Copy uninstall command">Copy uninstall command</button>&nbsp;· <a href="https://github.com/Parrtth/macsweat">Source</a></p>
+        <p class="fine"><a class="ver" href="https://github.com/Parrtth/macsweat/releases/tag/v1.0.0" aria-label="Release notes for v1.0.0">v1.0.0</a>&nbsp;· macOS&nbsp;13 or later&nbsp;· <a href="/install">Read the script</a>&nbsp;· <button class="linkbtn" type="button" data-copy="curl -fsSL https://macsweat.parthh.dev/uninstall | sh" data-label="Copy uninstall command">Copy uninstall command</button></p>
       </div>
     </div>
   </section>
@@ -405,12 +329,11 @@
 
 <footer>
   <div class="wrap">
-    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>MacSweat</a>
+    <p>MacSweat is free and MIT licensed. Made by <a href="https://parthh.dev">Parth</a>.</p>
     <nav aria-label="Footer">
       <a href="https://github.com/Parrtth/macsweat">GitHub</a>
       <a href="https://github.com/Parrtth/macsweat/releases">Releases</a>
-      <a href="https://github.com/Parrtth/macsweat/blob/main/LICENSE">MIT License</a>
-      <a href="https://parthh.dev">Made by Parth</a>
+      <a href="https://github.com/Parrtth/macsweat/blob/main/LICENSE">License</a>
     </nav>
   </div>
 </footer>
@@ -441,13 +364,22 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
   });
 
-  // Demo panel
+  // The menu bar clock shows the visitor's own time, the way a menu bar would.
+  function clock() {
+    var now = new Date();
+    $('clock-day').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).replace(',', '');
+    $('clock-time').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+  clock(); setInterval(clock, 20000);
+
+  // Demo panel. Memory is in GB; the Mac has 5.4 GB in use besides these four.
   var START = [
-    { id: 'next', kind: 'task', name: 'Next.js dev server', sub: 'storefront · up 3h 12m', cpu: 386, act: 'Stop' },
-    { id: 'chrome', kind: 'app', name: 'Google Chrome', cpu: 64, act: 'Quit', color: '#3b7ded' },
-    { id: 'spot', kind: 'sys', name: 'Spotlight indexing', cpu: 48 },
-    { id: 'mail', kind: 'app', name: 'Mail', cpu: 12, act: 'Quit', color: '#2a9df4' }
+    { id: 'next', kind: 'task', name: 'Next.js dev server', sub: 'storefront · up 3h 12m', cpu: 386, mem: 4.1, act: 'Stop' },
+    { id: 'chrome', kind: 'app', name: 'Google Chrome', cpu: 64, mem: 3.4, act: 'Quit', icon: 'assets/app-chrome.png' },
+    { id: 'spot', kind: 'sys', name: 'Spotlight indexing', sub: 'Indexing files for search.', cpu: 48, mem: 0.1 },
+    { id: 'mail', kind: 'app', name: 'Mail', cpu: 12, mem: 1.2, act: 'Quit', icon: 'assets/app-mail.png' }
   ];
+  var TASK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7.5 10l2.5 2-2.500 2M12.500 14.500h3.500"/></svg>';
   var GEAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="8.2" stroke-width="3" stroke-dasharray="3.22 3.22"/><circle cx="12" cy="12" r="6.4" stroke-width="1.5"/><circle cx="12" cy="12" r="2.6" stroke-width="1.5"/></svg>';
   var rows, history = [], touched = false;
 
@@ -457,12 +389,17 @@
     rows.forEach(function (r) { cpu += r.cpu; });
     return Math.round(13 + cpu / 7.85);
   }
+  function memory() {
+    var mem = 5.4;
+    rows.forEach(function (r) { mem += r.mem; });
+    return mem;
+  }
   function severity(cpu) { return cpu >= 75 ? 'red' : cpu >= 40 ? 'orange' : 'green'; }
 
   function rowHTML(r, hot) {
-    var icon = r.kind === 'app'
-      ? '<span class="ico" style="background:' + r.color + '">' + r.name.charAt(0) + '</span>'
-      : '<span class="ico ' + r.kind + '">' + (r.kind === 'task' ? '&gt;_' : GEAR) + '</span>';
+    var icon = r.icon
+      ? '<img class="ico" src="' + r.icon + '" width="26" height="26" alt="">'
+      : '<span class="ico">' + (r.kind === 'task' ? TASK : GEAR) + '</span>';
     var action = r.act
       ? '<button class="act' + (hot && !touched ? ' pulse' : '') + '" type="button" data-id="' + r.id + '" aria-label="' + r.act + ' ' + r.name + '">' + r.act + '</button>'
       : '<span></span>';
@@ -471,14 +408,18 @@
   }
 
   function render() {
-    var cpu = total(), level = severity(cpu);
+    var cpu = total(), mem = memory(), level = severity(cpu), full = mem >= 13;
     var sorted = rows.slice().sort(function (a, b) { return b.cpu - a.cpu; });
     var top = sorted[0];
     $('headline').textContent = cpu >= 75 ? 'Your Mac is working hard' : cpu >= 40 ? 'Your Mac is fairly busy' : 'Your Mac is taking it easy';
     $('detail').textContent = top && top.cpu >= 20 ? top.name + ' is using the most CPU (' + cpuLabel(top.cpu) + ').' : 'Nothing is using much CPU.';
-    $('dot').style.background = 'var(--' + level + ')';
+    $('dot').style.background = level === 'red' ? 'var(--p-red)' : level === 'orange' ? 'var(--p-orange)' : '#34c759';
     $('t-cpu').textContent = cpu + '%';
     $('t-cpu').className = cpu >= 75 ? 't-red' : cpu >= 40 ? 't-orange' : '';
+    $('t-mem').textContent = mem.toFixed(1) + ' GB';
+    $('t-mem').className = full ? 't-orange' : '';
+    $('t-mem-note').textContent = full ? 'Getting full' : 'of 16 GB';
+    $('t-mem-note').className = full ? 't-orange' : '';
     $('t-heat').textContent = cpu >= 75 ? 'Warm' : 'Normal';
     $('t-heat').className = cpu >= 75 ? 't-orange' : '';
     $('status-pct').textContent = cpu + '%';
@@ -487,7 +428,8 @@
     $('rows').innerHTML = sorted.map(function (r) { return rowHTML(r, r.id === hotID); }).join('');
     var calm = level === 'green';
     document.body.classList.toggle('calm', calm);
-    $('result').hidden = !(calm && touched);
+    $('cue-hot').hidden = calm; $('cue-calm').hidden = !calm;
+    $('theme').setAttribute('content', calm ? '#e9f2f5' : '#ff8f5c');
   }
 
   function spark(value) {
@@ -507,7 +449,8 @@
     render();
   }
 
-  document.querySelector('.panel').addEventListener('click', function (event) {
+  var panel = document.querySelector('.panel');
+  panel.addEventListener('click', function (event) {
     var button = event.target.closest('.act');
     if (!button) return;
     var id = button.getAttribute('data-id'), row = document.querySelector('[data-row="' + id + '"]');
@@ -521,14 +464,22 @@
   });
   $('reset').addEventListener('click', reset);
 
+  // The panel's arrow points at the status item it hangs from.
+  function arrow() {
+    var s = $('status').getBoundingClientRect(), p = panel.getBoundingClientRect();
+    panel.style.setProperty('--arrow', Math.max(24, Math.min(p.width - 24, s.left + s.width / 2 - p.left)) + 'px');
+  }
+  arrow(); window.addEventListener('resize', arrow);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(arrow);
+
   reset();
   setInterval(tick, 1600);
 })();
 </script>
 <script>
-// Hero heat: one cooling wave when the demo calms down, and the warmth fades back in on "Make it sweat again".
+// Heat: one cooling wave when the demo calms down, and the warmth fades back in on "Make it sweat again".
 (function () {
-  var heat = document.querySelector('.heat'), chill = document.querySelector('.chill');
+  var heat = document.querySelector('.heat'), frost = document.querySelector('.frost');
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches, origin = null, wasCalm = false;
   // Remember where Stop or Quit was pressed, so the wave starts there.
   document.addEventListener('click', function (e) { if (e.target.closest('.act')) origin = { x: e.clientX, y: e.clientY }; }, true);
@@ -539,35 +490,17 @@
   }
   function cool() {
     if (reducedMotion) { heat.classList.add('cold'); return; }
-    from(heat); from(chill);
+    from(heat); from(frost);
     heat.classList.remove('cold'); heat.classList.add('cooling');
-    chill.classList.remove('go'); void chill.offsetWidth; chill.classList.add('go');
+    frost.classList.remove('go'); void frost.offsetWidth; frost.classList.add('go');
   }
   heat.addEventListener('animationend', function () { heat.classList.add('cold'); heat.classList.remove('cooling'); });
-  function warm() { heat.classList.remove('cooling'); void heat.offsetWidth; heat.classList.remove('cold'); chill.classList.remove('go'); }
+  function warm() { heat.classList.remove('cooling'); void heat.offsetWidth; heat.classList.remove('cold'); frost.classList.remove('go'); }
   new MutationObserver(function () {
     var calm = document.body.classList.contains('calm');
     if (calm && !wasCalm) cool(); else if (!calm && wasCalm) warm();
     wasCalm = calm;
   }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-})();
-</script>
-<script>
-// What it does: point at a feature (hover, focus or tap) and the spotlight moves to that part of the panel.
-(function () {
-  var spot = document.getElementById('spot'), wrap = document.querySelector('.shotwrap'), buttons = document.querySelectorAll('[data-spot]');
-  function point(b) {
-    var v = b.dataset.spot.split(',');
-    spot.style.left = v[0] + '%'; spot.style.top = v[1] + '%'; spot.style.width = v[2] + '%'; spot.style.height = v[3] + '%';
-    wrap.classList.toggle('stop', b.hasAttribute('data-stop'));
-    buttons.forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-  }
-  buttons.forEach(function (b) {
-    b.addEventListener('mouseenter', function () { point(b); });
-    b.addEventListener('focus', function () { point(b); });
-    b.addEventListener('click', function () { point(b); });
-  });
-  point(buttons[0]);
 })();
 </script>
 </body>
