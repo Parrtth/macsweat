@@ -57,10 +57,12 @@ Click the icon and MacSweat shows you four things.
 ## Questions
 
 <details>
-<summary><b>Why a Terminal command and not a download?</b></summary>
+<summary><b>Can I download it instead of using Terminal?</b></summary>
 <br>
 
-MacSweat is free and isn't notarized by Apple, which needs a $99-a-year developer account. macOS blocks a zip downloaded in a browser from an app like that. The install script avoids the block, and it's short enough to read before you run it.
+Yes. Download [MacSweat.zip](https://github.com/Parrtth/macsweat/releases/latest/download/MacSweat.zip), then move MacSweat to Applications. MacSweat is free and isn't notarized by Apple, which needs a $99-a-year developer account, so macOS blocks it the first time you open it. Go to System Settings › Privacy & Security and click **Open Anyway**.
+
+The install command skips that step, and it's short enough to read before you run it.
 
 </details>
 
